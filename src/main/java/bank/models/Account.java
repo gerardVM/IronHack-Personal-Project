@@ -23,6 +23,7 @@ import javax.validation.constraints.NotNull;
 @NoArgsConstructor
 @AllArgsConstructor
 @Entity
+@Inheritance( strategy = InheritanceType.JOINED )
 public abstract class Account {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
@@ -31,12 +32,12 @@ public abstract class Account {
     @NotNull
     private Money balance;
     @NotNull
+    private Money penaltyFee;
+    @NotNull
     @ManyToOne
     @JoinColumn(name = "primaryOwner")
     private AccountHolder primaryOwner;
     @ManyToOne
     @JoinColumn(name = "secondaryOwner")
     private AccountHolder secondaryOwner;
-    @NotNull
-    private Money penaltyFee;
 }

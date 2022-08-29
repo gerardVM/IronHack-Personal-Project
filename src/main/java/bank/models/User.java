@@ -13,6 +13,7 @@ import javax.validation.constraints.NotNull;
 @NoArgsConstructor
 @AllArgsConstructor
 @Entity
+@Inheritance( strategy = InheritanceType.JOINED )
 public class User {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
