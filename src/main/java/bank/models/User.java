@@ -1,7 +1,5 @@
-package bank.models.roles;
+package bank.models;
 
-import bank.models.Role;
-import bank.models.User;
 import lombok.AllArgsConstructor;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
@@ -9,15 +7,22 @@ import lombok.Setter;
 
 import javax.persistence.*;
 import javax.validation.constraints.NotNull;
-import java.util.HashMap;
 
 @Getter
 @Setter
 @NoArgsConstructor
 @AllArgsConstructor
 @Entity
-public class ThirdParty extends User {
+public class User {
+    @Id
+    @GeneratedValue(strategy = GenerationType.IDENTITY)
+    private Long id;
     @NotNull
     @Column(unique = true)
-    private HashMap<String, String> thirdPartyData;
+    private String username;
+    @NotNull
+    private String password;
+    @ManyToOne
+    @JoinColumn(name = "role")
+    private Role role;
 }

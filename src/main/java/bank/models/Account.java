@@ -8,7 +8,7 @@ import lombok.Setter;
 import org.javamoney.moneta.Money;
 
 
-import javax.persistence.Embeddable;
+import javax.persistence.*;
 import javax.validation.constraints.NotNull;
 
 /**
@@ -22,12 +22,20 @@ import javax.validation.constraints.NotNull;
 @Setter
 @NoArgsConstructor
 @AllArgsConstructor
+@Entity
 public abstract class Account {
+    @Id
+    @GeneratedValue(strategy = GenerationType.IDENTITY)
+    @NotNull
+    private Long id;
     @NotNull
     private Money balance;
     @NotNull
+    @ManyToOne
+    @JoinColumn(name = "primaryOwner")
     private AccountHolder primaryOwner;
-    // Optional?
+    @ManyToOne
+    @JoinColumn(name = "secondaryOwner")
     private AccountHolder secondaryOwner;
     @NotNull
     private Money penaltyFee;

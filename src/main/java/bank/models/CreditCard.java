@@ -17,7 +17,7 @@ import javax.validation.constraints.NotNull;
 @Setter
 @NoArgsConstructor
 @AllArgsConstructor
-@Embeddable
+@Entity
 public class CreditCard extends Account {
     @NotNull
     private Money creditLimit;

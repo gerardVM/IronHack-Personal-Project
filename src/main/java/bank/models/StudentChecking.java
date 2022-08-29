@@ -19,7 +19,7 @@ import java.time.LocalDate;
 @Setter
 @NoArgsConstructor
 @AllArgsConstructor
-@Embeddable
+@Entity
 public class StudentChecking extends Account {
     @NotNull
     private String secretKey;

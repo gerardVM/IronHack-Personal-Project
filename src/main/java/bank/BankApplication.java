@@ -25,6 +25,8 @@ public class BankApplication {
 	}
 
 	/** This will be moved into a controller */
+
+	/*
 	public void createNewAdmin(Admin admin, Roles roles) {
 		Role role = new Role();
 		role.setRole(roles);
@@ -33,6 +35,6 @@ public class BankApplication {
 		admin.setPassword(passwordEncoder.encode(admin.getPassword()));
 		admin.setRole(role);
 		adminRepository.save(admin);
-	}
+	}*/
 
 }

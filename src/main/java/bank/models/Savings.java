@@ -20,7 +20,7 @@ import java.time.LocalDate;
 @Setter
 @NoArgsConstructor
 @AllArgsConstructor
-@Embeddable
+@Entity
 public class Savings extends Account{
     @NotNull
     private String secretKey;
@@ -32,5 +32,4 @@ public class Savings extends Account{
     private LocalDate creationDate;
     @NotNull
     private Status accountStatus;
-
 }
