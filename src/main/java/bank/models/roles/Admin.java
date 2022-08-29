@@ -7,9 +7,13 @@ import lombok.NoArgsConstructor;
 import lombok.Setter;
 import javax.persistence.*;
 
+/**
+ * This class represents an Admin Account.
+ * In this project, Admins have name and password.
+ */
 @Getter
 @Setter
-@AllArgsConstructor
 @Entity
 public class Admin extends User {
+
 }

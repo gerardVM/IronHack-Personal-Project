@@ -17,16 +17,13 @@ import java.util.Set;
 @Getter
 @Setter
 @NoArgsConstructor
-@AllArgsConstructor
 @Entity
 public class AccountHolder extends User {
     private LocalDate birthDate;
     private String primaryAddress;
     private String optionalAddress;
-    /*
     @OneToMany(mappedBy = "primaryOwner", fetch = FetchType.LAZY, cascade = CascadeType.ALL)
     private Set<Account> primary = new HashSet<>();
     @OneToMany(mappedBy = "secondaryOwner", fetch = FetchType.LAZY, cascade = CascadeType.ALL)
     private Set<Account> secondary = new HashSet<>();
-     */
 }

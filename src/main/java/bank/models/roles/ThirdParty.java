@@ -14,10 +14,6 @@ import java.util.HashMap;
 @Getter
 @Setter
 @NoArgsConstructor
-@AllArgsConstructor
 @Entity
 public class ThirdParty extends User {
-    @NotNull
-    @Column(unique = true)
-    private HashMap<String, String> thirdPartyData;
 }

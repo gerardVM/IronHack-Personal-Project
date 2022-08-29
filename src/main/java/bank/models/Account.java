@@ -21,7 +21,6 @@ import javax.validation.constraints.NotNull;
 @Getter
 @Setter
 @NoArgsConstructor
-@AllArgsConstructor
 @Entity
 @Inheritance( strategy = InheritanceType.JOINED )
 public abstract class Account {
