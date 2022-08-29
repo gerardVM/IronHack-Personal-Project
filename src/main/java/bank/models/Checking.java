@@ -3,12 +3,13 @@ package bank.models;
 import javax.persistence.*;
 import javax.validation.constraints.NotNull;
 import javax.validation.constraints.Past;
+
 import bank.enums.Status;
-import lombok.AllArgsConstructor;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
-import org.javamoney.moneta.Money;
+
+import java.math.BigDecimal;
 import java.time.LocalDate;
 
 /**
@@ -23,10 +24,11 @@ public class Checking extends Account {
     @NotNull
     private String secretKey;
     @NotNull
-    private Money minimumBalance;
+    private BigDecimal minimumBalance;
     @NotNull
-    private Money monthlyMaintenanceFee;
+    private BigDecimal monthlyMaintenanceFee;
     @NotNull
+    @Past
     private LocalDate creationDate;
     @NotNull
     private Status accountStatus;

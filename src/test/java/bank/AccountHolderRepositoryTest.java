@@ -35,16 +35,16 @@ public class AccountHolderRepositoryTest {
 
     @BeforeEach
     public void setUp() {
+        auxRole = new Role();
+        auxRole.setRole(ACCOUNT_HOLDER);
+        roleRepository.save(auxRole);
         tester = new AccountHolder();
         tester.setUsername("Tester");
         tester.setPassword(passwordEncoder.encode("password"));
         tester.setBirthDate(LocalDate.of(1990, 1, 1));
         tester.setPrimaryAddress("Test Address");
         tester.setOptionalAddress("Test Address 2");
-        auxRole = new Role();
-        auxRole.setRole(ACCOUNT_HOLDER);
         tester.setRole(auxRole);
-        roleRepository.save(auxRole);
         accountHolderRepository.save(tester);
     }
 
@@ -64,5 +64,12 @@ public class AccountHolderRepositoryTest {
         assertEquals(checker.getBirthDate(), LocalDate.of(1990, 1, 1));
         assertEquals(checker.getPrimaryAddress(), "Test Address");
         assertEquals(checker.getOptionalAddress(), "Test Address 2");
+    }
+
+    @Test
+    void deleteAccountHolderTest(){
+        assertThrows(Exception.class, () -> {
+            roleRepository.deleteAll();
+        } );
     }
 }

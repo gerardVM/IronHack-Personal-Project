@@ -57,11 +57,15 @@ public class ThirdPartyRepositoryTest {
     @Test
     void addNewThirdPartyTest() {
         ThirdParty checker = thirdPartyService.findByUsername(tester.getUsername()).get();
-        System.out.println("flag2");
         assertEquals(checker.getUsername(), "Tester");
-        System.out.println("flag3");
         assertTrue(passwordEncoder.matches("$2a$12$p8qaYHmtyYnMgyMja2vsbe8K/vXs9NmjFaqfjBQ6Osro68ygS2ogW", checker.getPassword()));
-         System.out.println("flag5");
         assertEquals(checker.getRole().getRole(), THIRD_PARTY);
+    }
+
+    @Test
+    void deleteThirdPartyTest(){
+        assertThrows(Exception.class, () -> {
+            roleRepository.deleteAll();
+        } );
     }
 }

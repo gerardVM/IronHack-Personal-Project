@@ -4,11 +4,9 @@ import lombok.AllArgsConstructor;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
-import org.javamoney.moneta.Money;
-
-import javax.persistence.Embeddable;
 import javax.persistence.Entity;
 import javax.validation.constraints.NotNull;
+import java.math.BigDecimal;
 
 /**
  *  This class represents a Credit Card Account.
@@ -19,7 +17,7 @@ import javax.validation.constraints.NotNull;
 @Entity
 public class CreditCard extends Account {
     @NotNull
-    private Money creditLimit;
+    private BigDecimal creditLimit;
     @NotNull
     private double interestRate;
 }

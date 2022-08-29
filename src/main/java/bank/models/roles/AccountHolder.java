@@ -22,8 +22,8 @@ public class AccountHolder extends User {
     private LocalDate birthDate;
     private String primaryAddress;
     private String optionalAddress;
-    @OneToMany(mappedBy = "primaryOwner", fetch = FetchType.LAZY, cascade = CascadeType.ALL)
+    @OneToMany(mappedBy = "primaryOwner", fetch = FetchType.LAZY)
     private Set<Account> primary = new HashSet<>();
-    @OneToMany(mappedBy = "secondaryOwner", fetch = FetchType.LAZY, cascade = CascadeType.ALL)
+    @OneToMany(mappedBy = "secondaryOwner", fetch = FetchType.LAZY)
     private Set<Account> secondary = new HashSet<>();
 }

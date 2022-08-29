@@ -1,15 +1,14 @@
 package bank.models;
 
 import bank.models.roles.AccountHolder;
-import lombok.AllArgsConstructor;
+
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
-import org.javamoney.moneta.Money;
-
 
 import javax.persistence.*;
 import javax.validation.constraints.NotNull;
+import java.math.BigDecimal;
 
 /**
  *  This class represents an abstract Account.
@@ -26,12 +25,11 @@ import javax.validation.constraints.NotNull;
 public abstract class Account {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
-    @NotNull
     private Long id;
     @NotNull
-    private Money balance;
+    private BigDecimal balance;
     @NotNull
-    private Money penaltyFee;
+    private BigDecimal penaltyFee;
     @NotNull
     @ManyToOne
     @JoinColumn(name = "primaryOwner")

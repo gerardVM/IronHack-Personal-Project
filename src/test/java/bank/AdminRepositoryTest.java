@@ -59,4 +59,11 @@ public class AdminRepositoryTest {
         assertNotEquals(checker.getPassword(), passwordEncoder.encode("adminpassword"));
         assertEquals(checker.getRole().getRole(), ADMIN);
     }
+
+    @Test
+    void deleteAdminTest(){
+        assertThrows(Exception.class, () -> {
+            roleRepository.deleteAll();
+        } );
+    }
 }

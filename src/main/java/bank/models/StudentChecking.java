@@ -23,6 +23,7 @@ public class StudentChecking extends Account {
     @NotNull
     private String secretKey;
     @NotNull
+    @Past
     private LocalDate creationDate;
     @NotNull
     private Status accountStatus;

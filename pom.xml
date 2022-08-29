@@ -56,11 +56,6 @@
 			<scope>test</scope>
 		</dependency>
 		<dependency>
-			<groupId>org.javamoney</groupId>
-			<artifactId>moneta</artifactId>
-			<version>1.1</version>
-		</dependency>
-		<dependency>
 			<groupId>org.springframework.boot</groupId>
 			<artifactId>spring-boot-starter-validation</artifactId>
 		</dependency>
@@ -85,6 +80,21 @@
 				<version>3.0.0</version>
 				<configuration>
 					<source>1.8</source>
+				</configuration>
+			</plugin>
+			<!-- Might be unnecessary -->
+			<plugin>
+				<!-- Build an executable JAR -->
+				<groupId>org.apache.maven.plugins</groupId>
+				<artifactId>maven-jar-plugin</artifactId>
+				<version>3.2.2</version>
+				<configuration>
+					<archive>
+						<manifest>
+							<!-- <mainClass>com.src.main.java.Main</mainClass> -->
+							<mainClass>bank/BankApplication.java</mainClass>
+						</manifest>
+					</archive>
 				</configuration>
 			</plugin>
 		</plugins>
