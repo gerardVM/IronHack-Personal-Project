@@ -38,6 +38,7 @@ public class StudentCheckingRepositoryTest {
     StudentChecking tester;
     AccountHolder auxUser;
     Role auxRole;
+    StudentChecking checker;
 
     @BeforeEach
     public void setUp() {
@@ -56,6 +57,7 @@ public class StudentCheckingRepositoryTest {
         tester.setCreationDate(LocalDate.of(2020, 1, 1));
         tester.setAccountStatus(ACTIVE);
         studentCheckingRepository.save(tester);
+        checker = studentCheckingService.findByPrimaryOwner(tester.getPrimaryOwner()).get();
     }
 
     @AfterEach
@@ -67,7 +69,6 @@ public class StudentCheckingRepositoryTest {
 
     @Test
     void addNewStudentCheckingAccountTest(){
-        StudentChecking checker = studentCheckingService.findByPrimaryOwner(tester.getPrimaryOwner()).get();
         assertEquals(100, checker.getBalance().intValue());
         assertEquals(40, checker.getPenaltyFee().intValue());
         assertEquals(checker.getPrimaryOwner().getUsername(), "AuxUser");
@@ -81,8 +82,9 @@ public class StudentCheckingRepositoryTest {
     }
     @Test
     void deleteStudentCheckingAccountTest(){
-        assertThrows(Exception.class, () -> {
-            accountHolderRepository.deleteAll();
-        } );
+        assertThrows(Exception.class, () -> { accountHolderRepository.deleteAll(); } );
+        assertDoesNotThrow(() -> { studentCheckingRepository.deleteAll(); } );
+        assertDoesNotThrow(() -> { accountHolderRepository.deleteAll(); } );
+        assertDoesNotThrow(() -> { roleRepository.deleteAll(); } );
     }
 }

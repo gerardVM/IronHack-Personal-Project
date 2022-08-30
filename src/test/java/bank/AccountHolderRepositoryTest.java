@@ -1,5 +1,6 @@
 package bank;
 
+import bank.auxiliar.Address;
 import bank.models.Role;
 import bank.models.roles.AccountHolder;
 import bank.repositories.AccountHolderRepository;
@@ -32,20 +33,25 @@ public class AccountHolderRepositoryTest {
     PasswordEncoder passwordEncoder = new BCryptPasswordEncoder();
     AccountHolder tester;
     Role auxRole;
+    AccountHolder checker;
+    Address auxAddress;
 
     @BeforeEach
     public void setUp() {
         auxRole = new Role();
         auxRole.setRole(ACCOUNT_HOLDER);
         roleRepository.save(auxRole);
+        auxAddress = new Address();
+        auxAddress.setStreet("street");
         tester = new AccountHolder();
         tester.setUsername("Tester");
         tester.setPassword(passwordEncoder.encode("password"));
         tester.setBirthDate(LocalDate.of(1990, 1, 1));
-        tester.setPrimaryAddress("Test Address");
-        tester.setOptionalAddress("Test Address 2");
+        tester.setPrimaryAddress(auxAddress);
+        tester.setMailingAddress("Test Address 2");
         tester.setRole(auxRole);
         accountHolderRepository.save(tester);
+        checker = accountHolderService.findByUsername(tester.getUsername()).get();
     }
 
     @AfterEach
@@ -56,20 +62,19 @@ public class AccountHolderRepositoryTest {
 
     @Test
     void addNewAccountHolderTest() {
-        AccountHolder checker = accountHolderService.findByUsername(tester.getUsername()).get();
         assertEquals(checker.getUsername(), "Tester");
         assertTrue(passwordEncoder.matches("password", checker.getPassword()));
         assertNotEquals(checker.getPassword(), passwordEncoder.encode("password"));
         assertEquals(checker.getRole().getRole(), ACCOUNT_HOLDER);
         assertEquals(checker.getBirthDate(), LocalDate.of(1990, 1, 1));
-        assertEquals(checker.getPrimaryAddress(), "Test Address");
-        assertEquals(checker.getOptionalAddress(), "Test Address 2");
+        assertEquals(checker.getPrimaryAddress().getStreet(), "street");
+        assertEquals(checker.getMailingAddress(), "Test Address 2");
     }
 
     @Test
     void deleteAccountHolderTest(){
-        assertThrows(Exception.class, () -> {
-            roleRepository.deleteAll();
-        } );
+        assertThrows(Exception.class, () -> { roleRepository.deleteAll(); } );
+        assertDoesNotThrow(() -> { accountHolderRepository.deleteAll(); } );
+        assertDoesNotThrow(() -> { roleRepository.deleteAll(); } );
     }
 }
