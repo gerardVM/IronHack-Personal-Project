@@ -51,7 +51,6 @@ public class StudentCheckingRepositoryTest {
         accountHolderRepository.save(auxUser);
         tester = new StudentChecking();
         tester.setBalance(BigDecimal.valueOf(100));
-        tester.setPenaltyFee(BigDecimal.valueOf(1000));
         tester.setPrimaryOwner(auxUser);
         tester.setSecretKey(passwordEncoder.encode("1234"));
         tester.setCreationDate(LocalDate.of(2020, 1, 1));
@@ -70,7 +69,7 @@ public class StudentCheckingRepositoryTest {
     void addNewStudentCheckingAccountTest(){
         StudentChecking checker = studentCheckingService.findByPrimaryOwner(tester.getPrimaryOwner()).get();
         assertEquals(100, checker.getBalance().intValue());
-        assertEquals(1000, checker.getPenaltyFee().intValue());
+        assertEquals(40, checker.getPenaltyFee().intValue());
         assertEquals(checker.getPrimaryOwner().getUsername(), "AuxUser");
         assertTrue(passwordEncoder.matches("password", checker.getPrimaryOwner().getPassword()));
         assertEquals(checker.getPrimaryOwner().getRole().getRole(), ACCOUNT_HOLDER);

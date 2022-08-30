@@ -37,6 +37,7 @@ public class CreditCardRepositoryTest {
     CreditCard tester;
     AccountHolder auxUser;
     Role auxRole;
+    CreditCard checker;
 
     @BeforeEach
     public void setUp() {
@@ -50,11 +51,11 @@ public class CreditCardRepositoryTest {
         accountHolderRepository.save(auxUser);
         tester = new CreditCard();
         tester.setBalance(BigDecimal.valueOf(100));
-        tester.setPenaltyFee(BigDecimal.valueOf(1000));
         tester.setPrimaryOwner(auxUser);
-        tester.setCreditLimit(BigDecimal.valueOf(10000));
-        tester.setInterestRate(0.07);
+        // creditLimit has a set value of 100, so it is not necessary to set it here
+        // interestRate has a set value of 0.2, so it is not necessary to set it here
         creditCardRepository.save(tester);
+        checker = creditCardRepository.findByPrimaryOwner(tester.getPrimaryOwner()).get();
     }
 
     @AfterEach
@@ -66,21 +67,44 @@ public class CreditCardRepositoryTest {
 
     @Test
     void addNewCreditCardAccountTest(){
-        CreditCard checker = creditCardRepository.findByPrimaryOwner(tester.getPrimaryOwner()).get();
         assertEquals(100, checker.getBalance().intValue());
-        assertEquals(1000, checker.getPenaltyFee().intValue());
+        assertEquals(40, checker.getPenaltyFee().intValue());
         assertEquals(checker.getPrimaryOwner().getUsername(), "AuxUser");
         assertTrue(passwordEncoder.matches("password", checker.getPrimaryOwner().getPassword()));
         assertEquals(checker.getPrimaryOwner().getRole().getRole(), ACCOUNT_HOLDER);
         assertEquals(checker.getSecondaryOwner(), null);
-        assertEquals(10000, checker.getCreditLimit().intValue());
-        assertEquals(0.07, checker.getInterestRate());
+        assertEquals(100, checker.getCreditLimit().intValue());
+        assertEquals(0.2, checker.getInterestRate());
     }
 
     @Test
-    void deleteCreditCardAccountTest(){
-        assertThrows(Exception.class, () -> {
-            accountHolderRepository.deleteAll();
-        } );
+    void deleteSavingsAccountTest(){
+        assertThrows(Exception.class, () -> { accountHolderRepository.deleteAll(); } );
+        assertDoesNotThrow(() -> { creditCardRepository.deleteAll();       } );
+        assertDoesNotThrow(() -> { accountHolderRepository.deleteAll(); } );
+        assertDoesNotThrow(() -> { roleRepository.deleteAll();          } );
+    }
+
+    @Test
+    void constraintsOfCreditCardAccount(){
+        tester.setCreditLimit(BigDecimal.valueOf(99));
+        assertThrows(Exception.class, () -> { creditCardRepository.save(tester); } );
+        tester.setCreditLimit(checker.getCreditLimit());
+        assertDoesNotThrow(() -> { creditCardRepository.save(tester); } );
+
+        tester.setCreditLimit(BigDecimal.valueOf(100001));
+        assertThrows(Exception.class, () -> { creditCardRepository.save(tester); } );
+        tester.setCreditLimit(checker.getCreditLimit());
+        assertDoesNotThrow(() -> { creditCardRepository.save(tester); } );
+
+        tester.setInterestRate(0.099);
+        assertThrows(Exception.class, () -> { creditCardRepository.save(tester); } );
+        tester.setInterestRate(checker.getInterestRate());
+        assertDoesNotThrow(() -> { creditCardRepository.save(tester); } );
+
+        tester.setInterestRate(0.201);
+        assertThrows(Exception.class, () -> { creditCardRepository.save(tester); } );
+        tester.setInterestRate(checker.getInterestRate());
+        assertDoesNotThrow(() -> { creditCardRepository.save(tester); } );
     }
 }

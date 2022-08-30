@@ -39,6 +39,7 @@ public class SavingsRepositoryTest {
     Savings tester;
     AccountHolder auxUser;
     Role auxRole;
+    Savings checker;
 
     @BeforeEach
     public void setUp() {
@@ -51,15 +52,15 @@ public class SavingsRepositoryTest {
         auxUser.setRole(auxRole);
         accountHolderRepository.save(auxUser);
         tester = new Savings();
-        tester.setBalance(BigDecimal.valueOf(100));
-        tester.setPenaltyFee(BigDecimal.valueOf(1000));
+        tester.setBalance(BigDecimal.valueOf(1000));
         tester.setPrimaryOwner(auxUser);
         tester.setSecretKey(passwordEncoder.encode("1234"));
-        tester.setMinimumBalance(BigDecimal.valueOf(10));
-        tester.setInterestRate(0.01);
+        // minimumBalance has a default value. So, we don't need to set it.
+        // interestRate has a default value. So, we don't need to set it.
         tester.setCreationDate(LocalDate.of(2020, 1, 1));
         tester.setAccountStatus(ACTIVE);
         savingsRepository.save(tester);
+        checker = savingsRepository.findByPrimaryOwner(tester.getPrimaryOwner()).get();
     }
 
     @AfterEach
@@ -71,24 +72,57 @@ public class SavingsRepositoryTest {
 
     @Test
     void addNewSavingsAccountTest(){
-        Savings checker = savingsRepository.findByPrimaryOwner(tester.getPrimaryOwner()).get();
-        assertEquals(100, checker.getBalance().intValue());
-        assertEquals(1000, checker.getPenaltyFee().intValue());
-        assertEquals(checker.getPrimaryOwner().getUsername(), "AuxUser");
-        assertTrue(passwordEncoder.matches("password", checker.getPrimaryOwner().getPassword()));
-        assertEquals(checker.getPrimaryOwner().getRole().getRole(), ACCOUNT_HOLDER);
-        assertTrue(passwordEncoder.matches("1234", checker.getSecretKey()));
-        assertEquals(10, checker.getMinimumBalance().intValue());
-        assertEquals(0.01, checker.getInterestRate());
-        assertTrue(checker.getCreationDate().equals(LocalDate.of(2020, 1, 1)));
-        assertEquals(checker.getAccountStatus(),ACTIVE);
-        tester.setCreationDate(LocalDate.of(2023, 1, 2));
-        assertThrows(Exception.class, () -> { savingsRepository.save(tester); });
+        assertEquals(1000, checker.getBalance().intValue());
+        assertEquals(40, checker.getPenaltyFee().intValue());
+        assertEquals("AuxUser", checker.getPrimaryOwner().getUsername() );
+        assertTrue  (passwordEncoder.matches("password", checker.getPrimaryOwner().getPassword()));
+        assertEquals(ACCOUNT_HOLDER, checker.getPrimaryOwner().getRole().getRole());
+        assertTrue  (passwordEncoder.matches("1234", checker.getSecretKey()));
+        assertEquals(1000, checker.getMinimumBalance().intValue());
+        assertEquals(0.0025, checker.getInterestRate());
+        assertTrue  (checker.getCreationDate().equals(LocalDate.of(2020, 1, 1)));
+        assertEquals(ACTIVE, checker.getAccountStatus());
     }
     @Test
     void deleteSavingsAccountTest(){
-        assertThrows(Exception.class, () -> {
-            accountHolderRepository.deleteAll();
-        } );
+        assertThrows(Exception.class, () -> { accountHolderRepository.deleteAll(); } );
+        assertDoesNotThrow(() -> { savingsRepository.deleteAll(); } );
+        assertDoesNotThrow(() -> { accountHolderRepository.deleteAll(); } );
+        assertDoesNotThrow(() -> { roleRepository.deleteAll(); } );
+    }
+
+    @Test
+    void constraintsOfSavingsAccount(){
+        tester.setCreationDate(LocalDate.of(2023, 1, 2));
+        assertThrows(Exception.class, () -> { savingsRepository.save(tester); });
+        tester.setCreationDate(checker.getCreationDate());
+        assertDoesNotThrow(() -> { savingsRepository.save(tester); });
+
+        tester.setMinimumBalance(BigDecimal.valueOf(99));
+        assertThrows(Exception.class, () -> { savingsRepository.save(tester); });
+        tester.setMinimumBalance(checker.getMinimumBalance());
+        assertDoesNotThrow(() -> { savingsRepository.save(tester); });
+
+        tester.setMinimumBalance(BigDecimal.valueOf(1001));
+        assertThrows(Exception.class, () -> { savingsRepository.save(tester); });
+        tester.setMinimumBalance(checker.getMinimumBalance());
+        assertDoesNotThrow(() -> { savingsRepository.save(tester); });
+
+        tester.setInterestRate(0.51);
+        assertThrows(Exception.class, () -> { savingsRepository.save(tester); });
+        tester.setInterestRate(checker.getInterestRate());
+        assertDoesNotThrow(() -> { savingsRepository.save(tester); });
+    }
+
+    @Test
+    void logicsForSavingsAccount() {
+        tester.setBalance(BigDecimal.valueOf(999));
+        assertEquals(959, tester.getBalance().intValue());
+        tester.setBalance(BigDecimal.valueOf(999));
+        assertEquals(999, tester.getBalance().intValue());
+        tester.setBalance(BigDecimal.valueOf(1000));
+        assertEquals(1000, tester.getBalance().intValue());
+        tester.setBalance(BigDecimal.valueOf(999));
+        assertEquals(959, tester.getBalance().intValue());
     }
 }

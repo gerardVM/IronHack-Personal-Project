@@ -24,12 +24,34 @@ public class Checking extends Account {
     @NotNull
     private String secretKey;
     @NotNull
-    private BigDecimal minimumBalance;
+    private static BigDecimal minimumBalance = BigDecimal.valueOf(250);
     @NotNull
-    private BigDecimal monthlyMaintenanceFee;
+    private static BigDecimal monthlyMaintenanceFee = BigDecimal.valueOf(12);
     @NotNull
     @Past
     private LocalDate creationDate;
     @NotNull
     private Status accountStatus;
+
+    // CONSULTA: ¿Por qué los getters de parámetros estáticos dejaron de generarse?
+    public BigDecimal getMinimumBalance() {
+        return this.minimumBalance;
+    }
+
+    public BigDecimal getMonthlyMaintenanceFee() {
+        return this.monthlyMaintenanceFee;
+    }
+
+    @Override
+    public void setBalance(BigDecimal balance) {
+        if (balance.compareTo(this.minimumBalance) < 0 && !super.isPenaltyApplied()) {
+            super.setBalance(balance.subtract(super.getPenaltyFee()));
+            super.setPenaltyApplied(true);
+        } else if (balance.compareTo(this.minimumBalance) < 0 && super.isPenaltyApplied()) {
+            super.setBalance(balance);
+        } else {
+            super.setBalance(balance);
+            super.setPenaltyApplied(false);
+        }
+    }
 }

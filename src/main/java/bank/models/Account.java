@@ -29,7 +29,8 @@ public abstract class Account {
     @NotNull
     private BigDecimal balance;
     @NotNull
-    private BigDecimal penaltyFee;
+    private static BigDecimal penaltyFee = BigDecimal.valueOf(40);
+    private boolean penaltyApplied = false;
     @NotNull
     @ManyToOne
     @JoinColumn(name = "primaryOwner")
@@ -37,4 +38,9 @@ public abstract class Account {
     @ManyToOne
     @JoinColumn(name = "secondaryOwner")
     private AccountHolder secondaryOwner;
+
+    // CONSULTA: ¿Por qué los getters de parámetros estáticos dejaron de generarse?
+    public BigDecimal getPenaltyFee() {
+        return this.penaltyFee;
+    }
 }

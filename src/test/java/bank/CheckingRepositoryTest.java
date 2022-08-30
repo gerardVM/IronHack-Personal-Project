@@ -38,6 +38,7 @@ public class CheckingRepositoryTest {
     Checking tester;
     AccountHolder auxUser;
     Role auxRole;
+    Checking checker;
 
     @BeforeEach
     public void setUp() {
@@ -50,15 +51,13 @@ public class CheckingRepositoryTest {
         auxUser.setRole(auxRole);
         accountHolderRepository.save(auxUser);
         tester = new Checking();
-        tester.setBalance(BigDecimal.valueOf(100));
-        tester.setPenaltyFee(BigDecimal.valueOf(1000));
+        tester.setBalance(BigDecimal.valueOf(250));
         tester.setPrimaryOwner(auxUser);
         tester.setSecretKey(passwordEncoder.encode("1234"));
-        tester.setMinimumBalance(BigDecimal.valueOf(10));
-        tester.setMonthlyMaintenanceFee(BigDecimal.valueOf(1));
         tester.setCreationDate(LocalDate.of(2020, 1, 1));
         tester.setAccountStatus(ACTIVE);
         checkingRepository.save(tester);
+        checker = checkingRepository.findByPrimaryOwner(tester.getPrimaryOwner()).get();
     }
 
     @AfterEach
@@ -70,15 +69,14 @@ public class CheckingRepositoryTest {
 
     @Test
     void addNewCheckingAccountTest(){
-        Checking checker = checkingRepository.findByPrimaryOwner(tester.getPrimaryOwner()).get();
-        assertEquals(100, checker.getBalance().intValue());
-        assertEquals(1000, checker.getPenaltyFee().intValue());
-        assertEquals(checker.getPrimaryOwner().getUsername(), "AuxUser");
+        assertEquals(250, checker.getBalance().intValue());
+        assertEquals(40, checker.getPenaltyFee().intValue());
+        assertEquals("AuxUser", checker.getPrimaryOwner().getUsername());
         assertTrue(passwordEncoder.matches("password", checker.getPrimaryOwner().getPassword()));
-        assertEquals(checker.getPrimaryOwner().getRole().getRole(), ACCOUNT_HOLDER);
+        assertEquals(ACCOUNT_HOLDER, checker.getPrimaryOwner().getRole().getRole());
         assertTrue(passwordEncoder.matches("1234", checker.getSecretKey()));
-        assertEquals(10, checker.getMinimumBalance().intValue());
-        assertEquals(1, checker.getMonthlyMaintenanceFee().intValue());
+        assertEquals(250, checker.getMinimumBalance().intValue());
+        assertEquals(12, checker.getMonthlyMaintenanceFee().intValue());
         assertTrue(checker.getCreationDate().equals(LocalDate.of(2020, 1, 1)));
         assertEquals(checker.getAccountStatus(),ACTIVE);
         tester.setCreationDate(LocalDate.of(2023, 1, 2));
@@ -86,8 +84,29 @@ public class CheckingRepositoryTest {
     }
     @Test
     void deleteCreditCardAccountTest(){
-        assertThrows(Exception.class, () -> {
-            accountHolderRepository.deleteAll();
-        } );
+        assertThrows(Exception.class, () -> { accountHolderRepository.deleteAll(); } );
+        assertDoesNotThrow(() -> { checkingRepository.deleteAll(); } );
+        assertDoesNotThrow(() -> { accountHolderRepository.deleteAll(); } );
+        assertDoesNotThrow(() -> { roleRepository.deleteAll(); } );
+    }
+
+    @Test
+    void constraintsOfCheckingAccount() {
+        tester.setCreationDate(LocalDate.of(2023, 1, 2));
+        assertThrows(Exception.class, () -> { checkingRepository.save(tester); });
+        tester.setCreationDate(checker.getCreationDate());
+        assertDoesNotThrow(() -> { checkingRepository.save(tester); });
+    }
+
+    @Test
+    void logicsForCheckingAccount() {
+        tester.setBalance(BigDecimal.valueOf(249));
+        assertEquals(209, tester.getBalance().intValue());
+        tester.setBalance(BigDecimal.valueOf(249));
+        assertEquals(249, tester.getBalance().intValue());
+        tester.setBalance(BigDecimal.valueOf(250));
+        assertEquals(250, tester.getBalance().intValue());
+        tester.setBalance(BigDecimal.valueOf(249));
+        assertEquals(209, tester.getBalance().intValue());
     }
 }
