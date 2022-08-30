@@ -15,5 +15,4 @@ import java.util.HashMap;
 @Setter
 @NoArgsConstructor
 @Entity
-public class ThirdParty extends User {
-}
+public class ThirdParty extends User { }

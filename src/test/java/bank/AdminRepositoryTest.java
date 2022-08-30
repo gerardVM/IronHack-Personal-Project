@@ -32,17 +32,19 @@ public class AdminRepositoryTest {
     PasswordEncoder passwordEncoder = new BCryptPasswordEncoder();
     Admin tester;
     Role auxRole;
+    Admin checker;
 
     @BeforeEach
     public void setUp() {
+        auxRole = new Role();
+        auxRole.setRole(ADMIN);
+        roleRepository.save(auxRole);
         tester = new Admin();
         tester.setUsername("Tester");
         tester.setPassword(passwordEncoder.encode("adminpassword"));
-        auxRole = new Role();
-        auxRole.setRole(ADMIN);
         tester.setRole(auxRole);
-        roleRepository.save(auxRole);
         adminRepository.save(tester);
+        checker = adminService.findByUsername(tester.getUsername()).get();
     }
 
     @AfterEach
@@ -53,7 +55,6 @@ public class AdminRepositoryTest {
 
     @Test
     void addNewAdminTest() {
-        Admin checker = adminService.findByUsername(tester.getUsername()).get();
         assertEquals(checker.getUsername(), "Tester");
         assertTrue(passwordEncoder.matches("adminpassword", checker.getPassword()));
         assertNotEquals(checker.getPassword(), passwordEncoder.encode("adminpassword"));
@@ -62,8 +63,8 @@ public class AdminRepositoryTest {
 
     @Test
     void deleteAdminTest(){
-        assertThrows(Exception.class, () -> {
-            roleRepository.deleteAll();
-        } );
+        assertThrows(Exception.class, () -> { roleRepository.deleteAll(); } );
+        assertDoesNotThrow(() -> { adminRepository.deleteAll(); } );
+        assertDoesNotThrow(() -> { roleRepository.deleteAll(); } );
     }
 }
