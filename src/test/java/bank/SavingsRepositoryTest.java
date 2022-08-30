@@ -17,6 +17,8 @@ import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.security.crypto.password.PasswordEncoder;
 
 import java.math.BigDecimal;
+import java.math.BigInteger;
+import java.math.RoundingMode;
 import java.time.LocalDate;
 
 import static bank.enums.Roles.ACCOUNT_HOLDER;
@@ -58,7 +60,7 @@ public class SavingsRepositoryTest {
         tester.setSecretKey(passwordEncoder.encode("1234"));
         // minimumBalance has a default value. So, we don't need to set it.
         // interestRate has a default value. So, we don't need to set it.
-        tester.setCreationDate(LocalDate.of(2020, 1, 1));
+        // creationDate has a default value. So, we don't need to set it.
         tester.setAccountStatus(ACTIVE);
         savingsRepository.save(tester);
         checker = savingsRepository.findByPrimaryOwner(tester.getPrimaryOwner()).get();
@@ -81,7 +83,7 @@ public class SavingsRepositoryTest {
         assertTrue  (passwordEncoder.matches("1234", checker.getSecretKey()));
         assertEquals(1000, checker.getMinimumBalance().intValue());
         assertEquals(0.0025, checker.getInterestRate());
-        assertTrue  (checker.getCreationDate().equals(LocalDate.of(2020, 1, 1)));
+        assertTrue  (checker.getCreationDate().equals(LocalDate.now()));
         assertEquals(ACTIVE, checker.getAccountStatus());
     }
     @Test
@@ -120,5 +122,22 @@ public class SavingsRepositoryTest {
         assertEquals(1000, tester.getBalance().intValue());
         tester.setBalance(BigDecimal.valueOf(999));
         assertEquals(959, tester.getBalance().intValue());
+    }
+
+    @Test
+    void InterestRateTest(){
+        tester.setBalance(BigDecimal.valueOf(1000000));
+        tester.setLastInterestAccrualDate(LocalDate.of(2022, 9, 20));
+        tester.claimRewards();
+        assertEquals( (BigDecimal.valueOf(1000000).multiply(
+                        BigDecimal.valueOf(Math.pow(0.0025/12+1,0))))
+                        .setScale(10, RoundingMode.HALF_UP),
+                    tester.getBalance());
+        tester.setLastInterestAccrualDate(LocalDate.of(2022, 4, 20));
+        tester.claimRewards();
+        assertEquals( BigDecimal.valueOf(1000000).multiply(
+                        BigDecimal.valueOf(Math.pow(0.0025/12+1,4)))
+                        .setScale(10, RoundingMode.HALF_UP),
+                tester.getBalance());
     }
 }

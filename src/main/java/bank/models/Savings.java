@@ -1,7 +1,6 @@
 package bank.models;
 
 import bank.enums.Status;
-import bank.services.NewAccounts;
 import lombok.AllArgsConstructor;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
@@ -9,6 +8,7 @@ import lombok.Setter;
 import javax.persistence.Entity;
 import javax.validation.constraints.*;
 import java.math.BigDecimal;
+import java.math.RoundingMode;
 import java.time.LocalDate;
 
 /**
@@ -29,8 +29,9 @@ public class Savings extends Account{
     @NotNull
     @DecimalMax(value = "0.5", message = "The interest rate must be between 0 and 0.5")
     private double interestRate = 0.0025;
+    private LocalDate lastInterestAccrualDate = LocalDate.now();
     @NotNull
-    private LocalDate creationDate;
+    private LocalDate creationDate = LocalDate.now();
     @NotNull
     private Status accountStatus;
 
@@ -48,18 +49,24 @@ public class Savings extends Account{
         }
     }
 
-    /*
-    @Override
-    public BigDecimal getBalance() {
-        NewAccounts newAccounts = new NewAccounts();
-        int ages = newAccounts.getAge(this.getCreationDate());
-        // This formula is used to calculate the balance after the interest rate is applied
-        // It really should be improved to consider compound interest
-        super.setBalance(super.getBalance().add(super.getBalance().multiply(BigDecimal.valueOf(this.interestRate * ages))));
+    public BigDecimal claimRewards() {
+        BigDecimal balance = super.getBalance();
+        super.setBalance(balance.multiply (BigDecimal.valueOf
+                                (Math.pow(1 + (this.interestRate/12), getEpochs())) )
+                .setScale(10, RoundingMode.HALF_UP));
         return super.getBalance();
     }
-    */
 
+    private int getEpochs() {
+        // This method returns the number of epochs (Months) that have passed since last accrual date
+        LocalDate today = LocalDate.now();
+        int epochs = 0;
+        while (lastInterestAccrualDate.isBefore(today.minusMonths(1))) {
+            epochs++;
+            setLastInterestAccrualDate(lastInterestAccrualDate.plusMonths(1));
+            today = LocalDate.now();
+        } return epochs;
+    }
 }
 
 
