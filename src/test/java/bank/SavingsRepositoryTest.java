@@ -50,6 +50,7 @@ public class SavingsRepositoryTest {
         auxUser.setUsername("AuxUser");
         auxUser.setPassword(passwordEncoder.encode("password"));
         auxUser.setRole(auxRole);
+        auxUser.setBirthDate(LocalDate.of(1990, 1, 1));
         accountHolderRepository.save(auxUser);
         tester = new Savings();
         tester.setBalance(BigDecimal.valueOf(1000));
@@ -93,11 +94,6 @@ public class SavingsRepositoryTest {
 
     @Test
     void constraintsOfSavingsAccount(){
-        tester.setCreationDate(LocalDate.of(2023, 1, 2));
-        assertThrows(Exception.class, () -> { savingsRepository.save(tester); });
-        tester.setCreationDate(checker.getCreationDate());
-        assertDoesNotThrow(() -> { savingsRepository.save(tester); });
-
         tester.setMinimumBalance(BigDecimal.valueOf(99));
         assertThrows(Exception.class, () -> { savingsRepository.save(tester); });
         tester.setMinimumBalance(checker.getMinimumBalance());

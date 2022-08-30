@@ -49,6 +49,7 @@ public class StudentCheckingRepositoryTest {
         auxUser.setUsername("AuxUser");
         auxUser.setPassword(passwordEncoder.encode("password"));
         auxUser.setRole(auxRole);
+        auxUser.setBirthDate(LocalDate.of(1990, 1, 1));
         accountHolderRepository.save(auxUser);
         tester = new StudentChecking();
         tester.setBalance(BigDecimal.valueOf(100));
@@ -77,8 +78,6 @@ public class StudentCheckingRepositoryTest {
         assertTrue(passwordEncoder.matches("1234", checker.getSecretKey()));
         assertTrue(checker.getCreationDate().equals(LocalDate.of(2020, 1, 1)));
         assertEquals(checker.getAccountStatus(),ACTIVE);
-        tester.setCreationDate(LocalDate.of(2023, 1, 2));
-        assertThrows(Exception.class, () -> { studentCheckingRepository.save(tester); });
     }
     @Test
     void deleteStudentCheckingAccountTest(){

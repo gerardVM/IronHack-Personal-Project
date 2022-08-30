@@ -37,7 +37,7 @@ public class AccountHolderRepositoryTest {
     Address auxAddress;
 
     @BeforeEach
-    public void setUp() {
+    void setUp() {
         auxRole = new Role();
         auxRole.setRole(ACCOUNT_HOLDER);
         roleRepository.save(auxRole);
@@ -55,7 +55,7 @@ public class AccountHolderRepositoryTest {
     }
 
     @AfterEach
-    public void tearDown() {
+    void tearDown() {
         accountHolderRepository.deleteAll();
         roleRepository.deleteAll();
     }

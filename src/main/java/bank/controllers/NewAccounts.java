@@ -12,15 +12,17 @@ import org.springframework.beans.factory.annotation.Autowired;
 
 import java.time.LocalDate;
 
+// How to use static methods smoothly
+
 public class NewAccounts {
     @Autowired
-    CheckingRepository checkingRepository;
+    private CheckingRepository checkingRepository;
     @Autowired
-    StudentCheckingRepository studentCheckingRepository;
+    private StudentCheckingRepository studentCheckingRepository;
     @Autowired
-    CreditCardRepository creditCardRepository;
+    private CreditCardRepository creditCardRepository;
     @Autowired
-    SavingsRepository savingsRepository;
+    private SavingsRepository savingsRepository;
 
     public CreditCard newCreditCard(CreditCard creditCardAccount) {
         return creditCardRepository.save(creditCardAccount);
@@ -47,10 +49,10 @@ public class NewAccounts {
         studentChecking.setSecretKey(checkingAccount.getSecretKey());
         studentChecking.setCreationDate(checkingAccount.getCreationDate());
         studentChecking.setAccountStatus(checkingAccount.getAccountStatus());
-        return studentCheckingRepository.save(studentChecking);
+        return studentChecking;
     }
 
-    private static int getDiffYears(LocalDate first, LocalDate last) {
+    private int getDiffYears(LocalDate first, LocalDate last) {
         int diff = first.getYear() - last.getYear();
         if (first.getMonthValue() < last.getMonthValue() ||
                 first.getMonthValue() == last.getMonthValue() && first.getDayOfMonth() < last.getDayOfMonth()) {
@@ -59,8 +61,8 @@ public class NewAccounts {
         return diff;
     }
 
-    private static int getAge(LocalDate birthDate) {
+    public int getAge(LocalDate birthDate) {
         LocalDate now = LocalDate.now();
-        return getDiffYears(birthDate, now);
+        return getDiffYears(now, birthDate);
     }
 }

@@ -16,6 +16,7 @@ import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.security.crypto.password.PasswordEncoder;
 
 import java.math.BigDecimal;
+import java.time.LocalDate;
 
 import static bank.enums.Roles.ACCOUNT_HOLDER;
 import static bank.enums.Status.ACTIVE;
@@ -48,6 +49,7 @@ public class CreditCardRepositoryTest {
         auxUser.setUsername("AuxUser");
         auxUser.setPassword(passwordEncoder.encode("password"));
         auxUser.setRole(auxRole);
+        auxUser.setBirthDate(LocalDate.of(1990, 1, 1));
         accountHolderRepository.save(auxUser);
         tester = new CreditCard();
         tester.setBalance(BigDecimal.valueOf(100));

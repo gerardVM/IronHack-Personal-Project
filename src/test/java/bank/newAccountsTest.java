@@ -1,12 +1,12 @@
 package bank;
 
+import bank.controllers.NewAccounts;
 import bank.models.Checking;
 import bank.models.Role;
 import bank.models.roles.AccountHolder;
-import bank.repositories.AccountHolderRepository;
-import bank.repositories.CheckingRepository;
-import bank.repositories.RoleRepository;
+import bank.repositories.*;
 import bank.services.CheckingService;
+import bank.services.StudentCheckingService;
 import org.junit.jupiter.api.AfterEach;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
@@ -21,14 +21,19 @@ import java.time.LocalDate;
 import static bank.enums.Roles.ACCOUNT_HOLDER;
 import static bank.enums.Status.ACTIVE;
 import static org.junit.jupiter.api.Assertions.*;
-import static org.junit.jupiter.api.Assertions.assertEquals;
 
 @SpringBootTest
-public class CheckingRepositoryTest {
+public class newAccountsTest {
+
     @Autowired
     private CheckingRepository checkingRepository;
     @Autowired
     private CheckingService checkingService;
+    @Autowired
+    private StudentCheckingRepository studentCheckingRepository;
+    @Autowired
+    private StudentCheckingService studentCheckingService;
+
     @Autowired
     private AccountHolderRepository accountHolderRepository;
     @Autowired
@@ -39,6 +44,7 @@ public class CheckingRepositoryTest {
     AccountHolder auxUser;
     Role auxRole;
     Checking checker;
+    NewAccounts newAccounts;
 
     @BeforeEach
     void setUp() {
@@ -55,7 +61,7 @@ public class CheckingRepositoryTest {
         tester.setBalance(BigDecimal.valueOf(250));
         tester.setPrimaryOwner(auxUser);
         tester.setSecretKey(passwordEncoder.encode("1234"));
-        tester.setCreationDate(LocalDate.of(2020, 1, 1));
+        tester.setCreationDate(LocalDate.now());
         tester.setAccountStatus(ACTIVE);
         checkingRepository.save(tester);
         checker = checkingRepository.findByPrimaryOwner(tester.getPrimaryOwner()).get();
@@ -64,41 +70,46 @@ public class CheckingRepositoryTest {
     @AfterEach
     void tearDown() {
         checkingRepository.deleteAll();
+        studentCheckingRepository.deleteAll();
         accountHolderRepository.deleteAll();
         roleRepository.deleteAll();
     }
 
     @Test
-    void addNewCheckingAccountTest(){
-        assertEquals(250, checker.getBalance().intValue());
-        assertEquals(40, checker.getPenaltyFee().intValue());
-        assertEquals("AuxUser", checker.getPrimaryOwner().getUsername());
-        assertTrue(passwordEncoder.matches("password", checker.getPrimaryOwner().getPassword()));
-        assertEquals(ACCOUNT_HOLDER, checker.getPrimaryOwner().getRole().getRole());
-        assertTrue(passwordEncoder.matches("1234", checker.getSecretKey()));
-        assertEquals(250, checker.getMinimumBalance().intValue());
-        assertEquals(12, checker.getMonthlyMaintenanceFee().intValue());
-        assertTrue(checker.getCreationDate().equals(LocalDate.of(2020, 1, 1)));
-        assertEquals(checker.getAccountStatus(),ACTIVE);
-    }
-    @Test
-    void deleteCreditCardAccountTest(){
-        assertThrows(Exception.class, () -> { accountHolderRepository.deleteAll(); } );
-        assertDoesNotThrow(() -> { checkingRepository.deleteAll(); } );
-        assertDoesNotThrow(() -> { accountHolderRepository.deleteAll(); } );
-        assertDoesNotThrow(() -> { roleRepository.deleteAll(); } );
+    void ageTest() {
+        newAccounts = new NewAccounts();
+        assertEquals(24, newAccounts.getAge(LocalDate.of(1998, 8, 29)));
+        assertEquals(23, newAccounts.getAge(LocalDate.of(1998, 12, 31)));
     }
 
-
     @Test
-    void logicsForCheckingAccount() {
-        tester.setBalance(BigDecimal.valueOf(249));
-        assertEquals(209, tester.getBalance().intValue());
-        tester.setBalance(BigDecimal.valueOf(249));
-        assertEquals(249, tester.getBalance().intValue());
-        tester.setBalance(BigDecimal.valueOf(250));
-        assertEquals(250, tester.getBalance().intValue());
-        tester.setBalance(BigDecimal.valueOf(249));
-        assertEquals(209, tester.getBalance().intValue());
+    void newCheckingAccountTest(){
+        newAccounts = new NewAccounts();
+
+        checkingRepository.deleteAll();
+        auxUser.setBirthDate(LocalDate.of(1998, 8, 29));
+        tester.setPrimaryOwner(auxUser);
+
+        if (newAccounts.getAge(tester.getPrimaryOwner().getBirthDate()) < 24) {
+            studentCheckingRepository.save(newAccounts.newStudentChecking(tester));
+        } else {
+            checkingRepository.save(tester);
+        }
+
+        assertDoesNotThrow(() -> { checkingService.findByPrimaryOwner(checker.getPrimaryOwner()).orElseThrow(); } );
+        assertThrows(Exception.class, () -> { studentCheckingService.findByPrimaryOwner(checker.getPrimaryOwner()).orElseThrow(); } );
+
+        checkingRepository.deleteAll();
+        auxUser.setBirthDate(LocalDate.of(1998, 12, 29));
+        tester.setPrimaryOwner(auxUser);
+
+        if (newAccounts.getAge(tester.getPrimaryOwner().getBirthDate()) < 24) {
+            studentCheckingRepository.save(newAccounts.newStudentChecking(tester));
+        } else {
+            checkingRepository.save(tester);
+        }
+
+        assertDoesNotThrow(() -> { studentCheckingService.findByPrimaryOwner(checker.getPrimaryOwner()).orElseThrow(); } );
+        assertThrows(Exception.class, () -> { checkingService.findByPrimaryOwner(checker.getPrimaryOwner()).orElseThrow(); } );
     }
 }

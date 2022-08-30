@@ -29,7 +29,6 @@ public class Savings extends Account{
     @DecimalMax(value = "0.5", message = "The interest rate must be between 0 and 0.5")
     private double interestRate = 0.0025;
     @NotNull
-    @Past
     private LocalDate creationDate;
     @NotNull
     private Status accountStatus;
