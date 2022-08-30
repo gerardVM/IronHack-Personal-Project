@@ -1,19 +1,18 @@
-package bank.controllers;
+package bank.services;
 
-import bank.models.Checking;
-import bank.models.CreditCard;
-import bank.models.Savings;
-import bank.models.StudentChecking;
+import bank.models.*;
 import bank.repositories.CheckingRepository;
 import bank.repositories.CreditCardRepository;
 import bank.repositories.SavingsRepository;
 import bank.repositories.StudentCheckingRepository;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.stereotype.Service;
 
 import java.time.LocalDate;
 
 // How to use static methods smoothly
 
+@Service
 public class NewAccounts {
     @Autowired
     private CheckingRepository checkingRepository;

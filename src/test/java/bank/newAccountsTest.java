@@ -1,6 +1,6 @@
 package bank;
 
-import bank.controllers.NewAccounts;
+import bank.services.NewAccounts;
 import bank.models.Checking;
 import bank.models.Role;
 import bank.models.roles.AccountHolder;
@@ -38,13 +38,14 @@ public class newAccountsTest {
     private AccountHolderRepository accountHolderRepository;
     @Autowired
     private RoleRepository roleRepository;
+    @Autowired
+    private NewAccounts newAccounts;
 
     PasswordEncoder passwordEncoder = new BCryptPasswordEncoder();
     Checking tester;
     AccountHolder auxUser;
     Role auxRole;
     Checking checker;
-    NewAccounts newAccounts;
 
     @BeforeEach
     void setUp() {
@@ -84,18 +85,11 @@ public class newAccountsTest {
 
     @Test
     void newCheckingAccountTest(){
-        newAccounts = new NewAccounts();
-
         checkingRepository.deleteAll();
         auxUser.setBirthDate(LocalDate.of(1998, 8, 29));
         tester.setPrimaryOwner(auxUser);
 
-        if (newAccounts.getAge(tester.getPrimaryOwner().getBirthDate()) < 24) {
-            studentCheckingRepository.save(newAccounts.newStudentChecking(tester));
-        } else {
-            checkingRepository.save(tester);
-        }
-
+        newAccounts.newChecking(tester);
         assertDoesNotThrow(() -> { checkingService.findByPrimaryOwner(checker.getPrimaryOwner()).orElseThrow(); } );
         assertThrows(Exception.class, () -> { studentCheckingService.findByPrimaryOwner(checker.getPrimaryOwner()).orElseThrow(); } );
 
@@ -103,12 +97,7 @@ public class newAccountsTest {
         auxUser.setBirthDate(LocalDate.of(1998, 12, 29));
         tester.setPrimaryOwner(auxUser);
 
-        if (newAccounts.getAge(tester.getPrimaryOwner().getBirthDate()) < 24) {
-            studentCheckingRepository.save(newAccounts.newStudentChecking(tester));
-        } else {
-            checkingRepository.save(tester);
-        }
-
+        newAccounts.newChecking(tester);
         assertDoesNotThrow(() -> { studentCheckingService.findByPrimaryOwner(checker.getPrimaryOwner()).orElseThrow(); } );
         assertThrows(Exception.class, () -> { checkingService.findByPrimaryOwner(checker.getPrimaryOwner()).orElseThrow(); } );
     }

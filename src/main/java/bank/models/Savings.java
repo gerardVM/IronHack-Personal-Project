@@ -1,6 +1,7 @@
 package bank.models;
 
 import bank.enums.Status;
+import bank.services.NewAccounts;
 import lombok.AllArgsConstructor;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
@@ -46,6 +47,19 @@ public class Savings extends Account{
             super.setPenaltyApplied(false);
         }
     }
+
+    /*
+    @Override
+    public BigDecimal getBalance() {
+        NewAccounts newAccounts = new NewAccounts();
+        int ages = newAccounts.getAge(this.getCreationDate());
+        // This formula is used to calculate the balance after the interest rate is applied
+        // It really should be improved to consider compound interest
+        super.setBalance(super.getBalance().add(super.getBalance().multiply(BigDecimal.valueOf(this.interestRate * ages))));
+        return super.getBalance();
+    }
+    */
+
 }
 
 
