@@ -16,6 +16,7 @@ import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.security.crypto.password.PasswordEncoder;
 
 import java.math.BigDecimal;
+import java.math.RoundingMode;
 import java.time.LocalDate;
 
 import static bank.enums.Roles.ACCOUNT_HOLDER;
@@ -108,5 +109,20 @@ public class CreditCardRepositoryTest {
         assertThrows(Exception.class, () -> { creditCardRepository.save(tester); } );
         tester.setInterestRate(checker.getInterestRate());
         assertDoesNotThrow(() -> { creditCardRepository.save(tester); } );
+    }
+
+    @Test
+    void InterestRateTest(){
+        tester.setBalance(BigDecimal.valueOf(1000000));
+        tester.setLastInterestAccrualDate(LocalDate.of(2022, 9, 20));
+        assertEquals( (BigDecimal.valueOf(1000000).multiply(
+                        BigDecimal.valueOf(Math.pow(0.2/12+1,0))))
+                        .setScale(10, RoundingMode.HALF_UP),
+                tester.getBalance());
+        tester.setLastInterestAccrualDate(LocalDate.of(2022, 4, 20));
+        assertEquals( BigDecimal.valueOf(1000000).multiply(
+                                BigDecimal.valueOf(Math.pow(0.2/12+1,4)))
+                        .setScale(10, RoundingMode.HALF_UP),
+                tester.getBalance());
     }
 }

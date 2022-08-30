@@ -128,13 +128,11 @@ public class SavingsRepositoryTest {
     void InterestRateTest(){
         tester.setBalance(BigDecimal.valueOf(1000000));
         tester.setLastInterestAccrualDate(LocalDate.of(2022, 9, 20));
-        tester.claimRewards();
         assertEquals( (BigDecimal.valueOf(1000000).multiply(
                         BigDecimal.valueOf(Math.pow(0.0025/12+1,0))))
                         .setScale(10, RoundingMode.HALF_UP),
                     tester.getBalance());
         tester.setLastInterestAccrualDate(LocalDate.of(2022, 4, 20));
-        tester.claimRewards();
         assertEquals( BigDecimal.valueOf(1000000).multiply(
                         BigDecimal.valueOf(Math.pow(0.0025/12+1,4)))
                         .setScale(10, RoundingMode.HALF_UP),

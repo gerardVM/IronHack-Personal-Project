@@ -20,7 +20,7 @@ public class StudentChecking extends Account {
     @NotNull
     private String secretKey;
     @NotNull
-    private LocalDate creationDate;
+    private LocalDate creationDate = LocalDate.now();
     @NotNull
     private Status accountStatus;
 }

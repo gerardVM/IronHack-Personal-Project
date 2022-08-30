@@ -55,7 +55,6 @@ public class CheckingRepositoryTest {
         tester.setBalance(BigDecimal.valueOf(250));
         tester.setPrimaryOwner(auxUser);
         tester.setSecretKey(passwordEncoder.encode("1234"));
-        tester.setCreationDate(LocalDate.of(2020, 1, 1));
         tester.setAccountStatus(ACTIVE);
         checkingRepository.save(tester);
         checker = checkingRepository.findByPrimaryOwner(tester.getPrimaryOwner()).get();
@@ -78,7 +77,7 @@ public class CheckingRepositoryTest {
         assertTrue(passwordEncoder.matches("1234", checker.getSecretKey()));
         assertEquals(250, checker.getMinimumBalance().intValue());
         assertEquals(12, checker.getMonthlyMaintenanceFee().intValue());
-        assertTrue(checker.getCreationDate().equals(LocalDate.of(2020, 1, 1)));
+        assertTrue(checker.getCreationDate().equals(LocalDate.now()));
         assertEquals(checker.getAccountStatus(),ACTIVE);
     }
     @Test

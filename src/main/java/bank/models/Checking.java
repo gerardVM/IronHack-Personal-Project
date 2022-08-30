@@ -28,7 +28,7 @@ public class Checking extends Account {
     @NotNull
     private static BigDecimal monthlyMaintenanceFee = BigDecimal.valueOf(12);
     @NotNull
-    private LocalDate creationDate;
+    private LocalDate creationDate = LocalDate.now();
     @NotNull
     private Status accountStatus;
 

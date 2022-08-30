@@ -49,6 +49,11 @@ public class Savings extends Account{
         }
     }
 
+    @Override
+    public BigDecimal getBalance() {
+        return claimRewards();
+    }
+
     public BigDecimal claimRewards() {
         BigDecimal balance = super.getBalance();
         super.setBalance(balance.multiply (BigDecimal.valueOf
