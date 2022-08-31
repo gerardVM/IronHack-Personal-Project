@@ -62,9 +62,9 @@ public class CheckingRepositoryTest {
 
     @AfterEach
     void tearDown() {
-        // checkingRepository.deleteAll();
-        // accountHolderRepository.deleteAll();
-        // roleRepository.deleteAll();
+        checkingRepository.deleteAll();
+        accountHolderRepository.deleteAll();
+        roleRepository.deleteAll();
     }
 
     @Test

@@ -1,11 +1,13 @@
 package bank;
 
+import bank.enums.Roles;
 import bank.services.NewAccounts;
 import bank.models.Checking;
 import bank.models.Role;
 import bank.models.roles.AccountHolder;
 import bank.repositories.*;
 import bank.services.CheckingService;
+import bank.services.RoleService;
 import bank.services.StudentCheckingService;
 import org.junit.jupiter.api.AfterEach;
 import org.junit.jupiter.api.BeforeEach;
@@ -17,8 +19,9 @@ import org.springframework.security.crypto.password.PasswordEncoder;
 
 import java.math.BigDecimal;
 import java.time.LocalDate;
+import java.util.List;
 
-import static bank.enums.Roles.ACCOUNT_HOLDER;
+import static bank.enums.Roles.*;
 import static bank.enums.Status.ACTIVE;
 import static org.junit.jupiter.api.Assertions.*;
 
@@ -39,6 +42,8 @@ public class NewAccountsTest {
     @Autowired
     private RoleRepository roleRepository;
     @Autowired
+    private RoleService roleService;
+    @Autowired
     private NewAccounts newAccounts;
 
     PasswordEncoder passwordEncoder = new BCryptPasswordEncoder();
@@ -49,13 +54,18 @@ public class NewAccountsTest {
 
     @BeforeEach
     void setUp() {
-        auxRole = new Role();
-        auxRole.setRole(ACCOUNT_HOLDER);
-        roleRepository.save(auxRole);
+        List<Roles> roles = List.of(ADMIN, ACCOUNT_HOLDER, THIRD_PARTY);
+        for (Roles role : roles) {
+            if (!roleService.findByRole(role).isPresent()) {
+                auxRole = new Role();
+                auxRole.setRole(role);
+                roleRepository.save(auxRole);
+            }
+        }
         auxUser = new AccountHolder();
         auxUser.setUsername("AuxUser");
         auxUser.setPassword(passwordEncoder.encode("password"));
-        auxUser.setRole(auxRole);
+        auxUser.setRole(roleService.findByRole(ACCOUNT_HOLDER).get());
         auxUser.setBirthDate(LocalDate.of(1990, 1, 1));
         accountHolderRepository.save(auxUser);
         tester = new Checking();

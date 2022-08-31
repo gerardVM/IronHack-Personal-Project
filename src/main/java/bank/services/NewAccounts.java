@@ -1,6 +1,7 @@
 package bank.services;
 
 import bank.models.*;
+import bank.models.roles.AccountHolder;
 import bank.repositories.CheckingRepository;
 import bank.repositories.CreditCardRepository;
 import bank.repositories.SavingsRepository;

@@ -33,7 +33,6 @@ public class BankApplication implements CommandLineRunner {
 
 	@Override
 	public void run(String... args) throws Exception {
-		// Testing testing = new Testing();
-		testing.addExampleData();
+		// testing.addExampleData();
 	}
 }

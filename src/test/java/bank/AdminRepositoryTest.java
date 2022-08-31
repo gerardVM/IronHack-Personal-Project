@@ -49,8 +49,8 @@ public class AdminRepositoryTest {
 
     @AfterEach
     public void tearDown() {
-        //adminRepository.deleteAll();
-        //roleRepository.deleteAll();
+        adminRepository.deleteAll();
+        roleRepository.deleteAll();
     }
 
     @Test
