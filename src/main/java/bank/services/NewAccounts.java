@@ -1,7 +1,9 @@
 package bank.services;
 
-import bank.models.*;
-import bank.models.roles.AccountHolder;
+import bank.models.accounts.Checking;
+import bank.models.accounts.CreditCard;
+import bank.models.accounts.Savings;
+import bank.models.accounts.StudentChecking;
 import bank.repositories.CheckingRepository;
 import bank.repositories.CreditCardRepository;
 import bank.repositories.SavingsRepository;

@@ -1,14 +1,17 @@
 package bank;
 
 import bank.enums.Roles;
-import bank.models.Checking;
+import bank.models.accounts.Checking;
 import bank.models.Role;
 import bank.models.roles.AccountHolder;
+import bank.models.roles.ThirdParty;
 import bank.repositories.AccountHolderRepository;
 import bank.repositories.CheckingRepository;
 import bank.repositories.RoleRepository;
+import bank.repositories.ThirdPartyRepository;
 import bank.services.CheckingService;
 import bank.services.RoleService;
+import org.hibernate.Session;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.security.crypto.password.PasswordEncoder;
@@ -33,6 +36,8 @@ public class Testing {
     private RoleRepository roleRepository;
     @Autowired
     private RoleService roleService;
+    @Autowired
+    private ThirdPartyRepository thirdPartyRepository;
 
     PasswordEncoder passwordEncoder = new BCryptPasswordEncoder();
     private Role auxRole;
@@ -80,5 +85,19 @@ public class Testing {
         tester3.setSecretKey(passwordEncoder.encode("4321"));
         tester3.setAccountStatus(ACTIVE);
         checkingRepository.save(tester3);
+
+        Checking tester4 = new Checking();
+        tester4.setBalance(BigDecimal.valueOf(1000));
+        tester4.setSecretKey(passwordEncoder.encode("3232"));
+        tester4.setAccountStatus(ACTIVE);
+        checkingRepository.save(tester4);
+        ThirdParty thirdPartyUser = new ThirdParty();
+        thirdPartyUser.setUsername("ThirdPartyUser");
+        thirdPartyUser.setPassword(passwordEncoder.encode("3333"));
+        thirdPartyUser.setRole(roleService.findByRole(THIRD_PARTY).get());
+        thirdPartyUser.setAccount(tester4);
+        thirdPartyRepository.save(thirdPartyUser);
+
+
     }
 }

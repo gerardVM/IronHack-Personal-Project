@@ -1,7 +1,7 @@
 package bank.models.roles;
 
 import bank.auxiliar.Address;
-import bank.models.Account;
+import bank.models.accounts.Account;
 import bank.models.User;
 import lombok.Getter;
 import lombok.NoArgsConstructor;

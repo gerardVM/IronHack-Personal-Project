@@ -1,7 +1,7 @@
 package bank;
 
 import bank.models.Role;
-import bank.models.StudentChecking;
+import bank.models.accounts.StudentChecking;
 import bank.models.roles.AccountHolder;
 import bank.repositories.AccountHolderRepository;
 import bank.repositories.RoleRepository;

@@ -1,4 +1,4 @@
-package bank.models;
+package bank.models.accounts;
 
 import bank.enums.Status;
 import lombok.AllArgsConstructor;
@@ -20,8 +20,6 @@ import java.time.LocalDate;
 @AllArgsConstructor
 @Entity
 public class Savings extends Account{
-    @NotNull
-    private String secretKey;
     @NotNull
     @Max(1000)
     @Min(100)

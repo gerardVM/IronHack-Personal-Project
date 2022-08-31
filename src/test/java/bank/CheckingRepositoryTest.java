@@ -1,6 +1,6 @@
 package bank;
 
-import bank.models.Checking;
+import bank.models.accounts.Checking;
 import bank.models.Role;
 import bank.models.roles.AccountHolder;
 import bank.repositories.AccountHolderRepository;

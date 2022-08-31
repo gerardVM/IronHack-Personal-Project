@@ -1,6 +1,6 @@
 package bank.services;
 
-import bank.models.StudentChecking;
+import bank.models.accounts.StudentChecking;
 import bank.models.roles.AccountHolder;
 import bank.repositories.StudentCheckingRepository;
 import org.springframework.beans.factory.annotation.Autowired;

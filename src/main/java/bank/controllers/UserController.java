@@ -1,7 +1,9 @@
 package bank.controllers;
 
 import bank.models.Role;
-import bank.models.Transaction;
+import bank.models.Transactions.RegularTransaction;
+import bank.models.Transactions.ThirdPartyTransaction;
+import bank.models.Transactions.Transaction;
 import bank.models.roles.AccountHolder;
 import bank.repositories.AccountRepository;
 import bank.repositories.RoleRepository;
@@ -65,8 +67,15 @@ public class UserController {
 
     @PostMapping("/new-transaction")
     @ResponseStatus(value = HttpStatus.ACCEPTED)
-    public Transaction newTransaction(@RequestBody Transaction transaction) {
+    public Transaction newTransaction(@RequestBody RegularTransaction transaction) {
         return transactionService.executeTransaction(transaction);
     }
 
+    @PostMapping("/new-tptransaction")
+    @ResponseStatus(value = HttpStatus.ACCEPTED)
+    public Transaction newTransaction(@RequestBody ThirdPartyTransaction transaction) {
+        return transactionService.executeTransaction(transaction);
+    }
 }
+
+

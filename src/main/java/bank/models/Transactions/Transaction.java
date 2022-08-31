@@ -1,4 +1,4 @@
-package bank.models;
+package bank.models.Transactions;
 
 import bank.models.roles.AccountHolder;
 import lombok.Getter;
@@ -13,6 +13,7 @@ import java.math.BigDecimal;
 @Setter
 @NoArgsConstructor
 @Entity
+@Inheritance( strategy = InheritanceType.JOINED )
 public class Transaction {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
@@ -21,17 +22,11 @@ public class Transaction {
     @NotNull
     private BigDecimal amount;
     @NotNull
-    // @OneToOne(fetch = FetchType.LAZY)
-    // @JoinColumn(name = "fromAccount")
     private Long fromAccountId;
     @NotNull
-    // @OneToOne(fetch = FetchType.LAZY)
-    // @JoinColumn(name = "toAccount")
     private Long toAccountId;
     @NotNull
     private String fromUsername;
     @NotNull
     private String toUsername;
-    @NotNull
-    private String signature;
 }

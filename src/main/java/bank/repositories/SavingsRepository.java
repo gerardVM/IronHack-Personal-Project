@@ -1,6 +1,6 @@
 package bank.repositories;
 
-import bank.models.Savings;
+import bank.models.accounts.Savings;
 import bank.models.roles.AccountHolder;
 import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.stereotype.Repository;

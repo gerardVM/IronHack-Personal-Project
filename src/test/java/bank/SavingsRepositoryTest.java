@@ -1,8 +1,7 @@
 package bank;
 
-import bank.models.Checking;
 import bank.models.Role;
-import bank.models.Savings;
+import bank.models.accounts.Savings;
 import bank.models.roles.AccountHolder;
 import bank.repositories.AccountHolderRepository;
 import bank.repositories.RoleRepository;
@@ -17,7 +16,6 @@ import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.security.crypto.password.PasswordEncoder;
 
 import java.math.BigDecimal;
-import java.math.BigInteger;
 import java.math.RoundingMode;
 import java.time.LocalDate;
 

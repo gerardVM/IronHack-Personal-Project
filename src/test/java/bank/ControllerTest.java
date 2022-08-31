@@ -1,6 +1,6 @@
 package bank;
 
-import bank.models.Checking;
+import bank.models.accounts.Checking;
 import bank.models.Role;
 import bank.models.roles.AccountHolder;
 import bank.repositories.AccountHolderRepository;
@@ -8,7 +8,6 @@ import bank.repositories.CheckingRepository;
 import bank.repositories.RoleRepository;
 import bank.services.CheckingService;
 import bank.services.RoleService;
-import com.fasterxml.jackson.core.type.TypeReference;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import org.junit.jupiter.api.AfterEach;
 import org.junit.jupiter.api.BeforeEach;
@@ -24,7 +23,6 @@ import org.springframework.web.context.WebApplicationContext;
 
 import java.math.BigDecimal;
 import java.time.LocalDate;
-import java.util.List;
 
 import static bank.enums.Roles.ACCOUNT_HOLDER;
 import static bank.enums.Status.ACTIVE;

@@ -1,7 +1,9 @@
-package bank.models;
+package bank.models.accounts;
 
+import bank.models.User;
 import bank.models.roles.AccountHolder;
 
+import bank.models.roles.ThirdParty;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
@@ -32,14 +34,15 @@ public abstract class Account {
     private static BigDecimal penaltyFee = BigDecimal.valueOf(40);
     private boolean penaltyApplied = false;
     @NotNull
+    private String secretKey;
     @ManyToOne
     @JoinColumn(name = "primaryOwner")
     private AccountHolder primaryOwner;
     @ManyToOne
     @JoinColumn(name = "secondaryOwner")
     private AccountHolder secondaryOwner;
-
-    // CONSULTA: ¿Por qué los getters de parámetros estáticos dejaron de generarse?
+    @OneToOne(mappedBy = "account", fetch = FetchType.LAZY)
+    private ThirdParty thirdParty;
     public BigDecimal getPenaltyFee() {
         return this.penaltyFee;
     }

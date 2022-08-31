@@ -1,6 +1,6 @@
 package bank;
 
-import bank.models.CreditCard;
+import bank.models.accounts.CreditCard;
 import bank.models.Role;
 import bank.models.roles.AccountHolder;
 import bank.repositories.AccountHolderRepository;
@@ -20,7 +20,6 @@ import java.math.RoundingMode;
 import java.time.LocalDate;
 
 import static bank.enums.Roles.ACCOUNT_HOLDER;
-import static bank.enums.Status.ACTIVE;
 import static org.junit.jupiter.api.Assertions.*;
 
 @SpringBootTest

@@ -1,6 +1,6 @@
 package bank.repositories;
 
-import bank.models.StudentChecking;
+import bank.models.accounts.StudentChecking;
 import bank.models.roles.AccountHolder;
 import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.stereotype.Repository;

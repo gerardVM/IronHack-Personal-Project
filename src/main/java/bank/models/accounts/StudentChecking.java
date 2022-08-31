@@ -1,4 +1,4 @@
-package bank.models;
+package bank.models.accounts;
 
 import bank.enums.Status;
 import lombok.Getter;
@@ -17,8 +17,6 @@ import java.time.LocalDate;
 @NoArgsConstructor
 @Entity
 public class StudentChecking extends Account {
-    @NotNull
-    private String secretKey;
     @NotNull
     private LocalDate creationDate = LocalDate.now();
     @NotNull

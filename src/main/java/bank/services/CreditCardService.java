@@ -1,9 +1,7 @@
 package bank.services;
 
-import bank.models.Checking;
-import bank.models.CreditCard;
+import bank.models.accounts.CreditCard;
 import bank.models.roles.AccountHolder;
-import bank.repositories.CheckingRepository;
 import bank.repositories.CreditCardRepository;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;

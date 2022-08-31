@@ -2,6 +2,7 @@ package bank.models.roles;
 
 import bank.models.Role;
 import bank.models.User;
+import bank.models.accounts.Account;
 import lombok.AllArgsConstructor;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
@@ -15,4 +16,9 @@ import java.util.HashMap;
 @Setter
 @NoArgsConstructor
 @Entity
-public class ThirdParty extends User { }
+public class ThirdParty extends User {
+    @OneToOne
+    @JoinColumn(name = "account_id")
+    private Account account;
+}
+

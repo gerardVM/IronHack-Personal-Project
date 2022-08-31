@@ -1,6 +1,6 @@
 package bank.services;
 
-import bank.models.Account;
+import bank.models.accounts.Account;
 import bank.models.roles.AccountHolder;
 import bank.repositories.AccountHolderRepository;
 import bank.repositories.AccountRepository;
