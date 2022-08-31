@@ -40,6 +40,7 @@ public class SecurityConfiguration  {
         httpSecurity.authorizeRequests()
                 // .mvcMatchers(HttpMethod.GET, "/user-area").hasRole("USER")
                 .mvcMatchers(HttpMethod.GET, "/balance").hasAnyRole( "ADMIN")
+                .mvcMatchers(HttpMethod.GET, "/balance/{username}").authenticated()
                 .anyRequest().permitAll();
 
         httpSecurity.csrf().disable();

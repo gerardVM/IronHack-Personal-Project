@@ -1,16 +1,17 @@
 package bank.controllers;
 
 import bank.models.Role;
+import bank.models.Transaction;
 import bank.models.roles.AccountHolder;
 import bank.repositories.AccountRepository;
 import bank.repositories.RoleRepository;
 import bank.repositories.UserRepository;
 import bank.services.ControllerService;
+import bank.services.TransactionService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.security.crypto.password.PasswordEncoder;
-import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
@@ -30,23 +31,14 @@ public class UserController {
     @Autowired
     ControllerService controllerService;
 
+    @Autowired
+    TransactionService transactionService;
+
     PasswordEncoder passwordEncoder = new BCryptPasswordEncoder();
 
-    @GetMapping("/say-hi")
+    @GetMapping("/hello-world")
     public String sayHi() {
-        return "Hi";
-    }
-
-    @GetMapping("/balance")
-    @ResponseStatus(value = HttpStatus.OK)
-    public String balance(@RequestParam Long id) {
-        return "Balance of account " + id + " is: " + accountRepository.findById(id).get().getBalance();
-    }
-
-    @GetMapping("/balance/{username}")
-    @ResponseStatus(value = HttpStatus.OK)
-    public List<String> findAllMyBalances(@PathVariable String username) {
-        return controllerService.findAllMyBalances(username);
+        return "Hello";
     }
 
     @PostMapping("/create-user")
@@ -59,6 +51,22 @@ public class UserController {
         userRepository.save(accountHolder);
     }
 
+    @GetMapping("/balance")
+    @ResponseStatus(value = HttpStatus.OK)
+    public String balance(@RequestParam Long id) {
+        return "Balance of account " + id + " is: " + accountRepository.findById(id).get().getBalance();
+    }
 
+    @GetMapping("/balance/{username}") // Missing authentication
+    @ResponseStatus(value = HttpStatus.OK)
+    public List<String> findAllMyBalances(@PathVariable String username) {
+        return controllerService.findAllMyBalances(username);
+    }
+
+    @PostMapping("/new-transaction")
+    @ResponseStatus(value = HttpStatus.ACCEPTED)
+    public Transaction newTransaction(@RequestBody Transaction transaction) {
+        return transactionService.executeTransaction(transaction);
+    }
 
 }

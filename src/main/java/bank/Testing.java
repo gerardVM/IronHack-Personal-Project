@@ -1,5 +1,6 @@
 package bank;
 
+import bank.enums.Roles;
 import bank.models.Checking;
 import bank.models.Role;
 import bank.models.roles.AccountHolder;
@@ -7,6 +8,7 @@ import bank.repositories.AccountHolderRepository;
 import bank.repositories.CheckingRepository;
 import bank.repositories.RoleRepository;
 import bank.services.CheckingService;
+import bank.services.RoleService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.security.crypto.password.PasswordEncoder;
@@ -14,9 +16,9 @@ import org.springframework.stereotype.Service;
 
 import java.math.BigDecimal;
 import java.time.LocalDate;
+import java.util.List;
 
-import static bank.enums.Roles.ACCOUNT_HOLDER;
-import static bank.enums.Roles.ADMIN;
+import static bank.enums.Roles.*;
 import static bank.enums.Status.ACTIVE;
 
 @Service
@@ -29,17 +31,26 @@ public class Testing {
     private AccountHolderRepository accountHolderRepository;
     @Autowired
     private RoleRepository roleRepository;
+    @Autowired
+    private RoleService roleService;
 
     PasswordEncoder passwordEncoder = new BCryptPasswordEncoder();
+    private Role auxRole;
 
     public void addExampleData() {
-        Role auxRole = new Role();
-        auxRole.setRole(ACCOUNT_HOLDER);
-        roleRepository.save(auxRole);
+        List<Roles> roles = List.of(ADMIN, ACCOUNT_HOLDER, THIRD_PARTY);
+        for (Roles role : roles) {
+            if (!roleService.findByRole(role).isPresent()) {
+                auxRole = new Role();
+                auxRole.setRole(role);
+                roleRepository.save(auxRole);
+            }
+        }
+
         AccountHolder auxUser = new AccountHolder();
         auxUser.setUsername("AuxUser");
         auxUser.setPassword(passwordEncoder.encode("password"));
-        auxUser.setRole(auxRole);
+        auxUser.setRole(roleService.findByRole(ACCOUNT_HOLDER).get());
         auxUser.setBirthDate(LocalDate.of(1990, 1, 1));
         accountHolderRepository.save(auxUser);
         Checking tester = new Checking();
@@ -49,14 +60,25 @@ public class Testing {
         tester.setAccountStatus(ACTIVE);
         checkingRepository.save(tester);
 
-        Role auxRole2 = new Role();
-        auxRole2.setRole(ADMIN);
-        roleRepository.save(auxRole2);
+
         AccountHolder auxUser2 = new AccountHolder();
         auxUser2.setUsername("AuxAdmin");
         auxUser2.setPassword(passwordEncoder.encode("1234"));
-        auxUser2.setRole(auxRole2);
+        auxUser2.setRole(roleService.findByRole(ADMIN).get());
         auxUser2.setBirthDate(LocalDate.of(1991, 1, 1));
         accountHolderRepository.save(auxUser2);
+
+        AccountHolder auxUser3 = new AccountHolder();
+        auxUser3.setUsername("AuxUser3");
+        auxUser3.setPassword(passwordEncoder.encode("4321"));
+        auxUser3.setRole(roleService.findByRole(ACCOUNT_HOLDER).get());
+        auxUser3.setBirthDate(LocalDate.of(1992, 1, 1));
+        accountHolderRepository.save(auxUser3);
+        Checking tester3 = new Checking();
+        tester3.setBalance(BigDecimal.valueOf(500));
+        tester3.setPrimaryOwner(auxUser3);
+        tester3.setSecretKey(passwordEncoder.encode("4321"));
+        tester3.setAccountStatus(ACTIVE);
+        checkingRepository.save(tester3);
     }
 }

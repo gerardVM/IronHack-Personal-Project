@@ -26,6 +26,7 @@ public class ControllerService {
                                         .stream()
                                         .map(Account::getBalance)
                                         .map(BigDecimal::toString)
+                                        .map(balance -> "Balance of account is: " + balance)
                                         .collect(Collectors.toList());
             return balances;
 
