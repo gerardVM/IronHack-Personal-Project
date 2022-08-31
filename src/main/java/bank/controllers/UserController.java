@@ -73,8 +73,9 @@ public class UserController {
 
     @PostMapping("/new-tptransaction")
     @ResponseStatus(value = HttpStatus.ACCEPTED)
-    public Transaction newTransaction(@RequestBody ThirdPartyTransaction transaction) {
-        return transactionService.executeTransaction(transaction);
+    public Transaction newTransaction(@RequestBody ThirdPartyTransaction transaction,
+                                      @RequestHeader("HashedKey") String hashedKey) throws Exception {
+        return transactionService.executeTransaction(transaction, hashedKey);
     }
 }
 

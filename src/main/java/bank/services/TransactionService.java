@@ -8,6 +8,7 @@ import bank.models.User;
 import bank.repositories.AccountRepository;
 import bank.repositories.TransactionRepository;
 import bank.repositories.UserRepository;
+import net.bytebuddy.implementation.bytecode.Throw;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.security.crypto.password.PasswordEncoder;
@@ -28,6 +29,17 @@ public class TransactionService {
 
 
     PasswordEncoder passwordEncoder = new BCryptPasswordEncoder();
+
+    public Transaction executeTransaction(Transaction transaction, String hashedKey) throws Exception {
+        User fromUser = userService.findByUsername(transaction.getFromUsername()).orElseThrow(
+                () -> new IllegalArgumentException("FromUser not found")
+        );
+        boolean validateHashedKey = passwordEncoder.matches(hashedKey, fromUser.getPassword());
+        if (!validateHashedKey) {
+            throw new Exception("Invalid hashed key");
+        }
+        return executeTransaction(transaction);
+    }
 
     public Transaction executeTransaction(Transaction transaction){
         boolean isValidBalance = isValidBalance(transaction);
@@ -56,7 +68,7 @@ public class TransactionService {
         BigDecimal availableAmount = accountRepository.findById(transaction.getFromAccountId()).orElseThrow(
                                                                 () -> new IllegalArgumentException("FromAccount not found")
                                                                 ).getBalance();
-        return availableAmount.compareTo(transaction.getAmount()) >= 0;
+        return availableAmount.compareTo(transaction.getAmount()) >= 0 && transaction.getAmount().compareTo(BigDecimal.ZERO) > 0;
     }
 
     public boolean isValidUsername(Transaction transaction){
