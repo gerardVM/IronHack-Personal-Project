@@ -72,7 +72,7 @@ public class TransactionService {
         return availableAmount.compareTo(transaction.getAmount()) >= 0;
     }
 
-    public boolean isValidUsername(Transaction transaction){
+    public boolean isValidUsername(Transaction transaction) {
         User toUser = userService.findByUsername(transaction.getToUsername()).orElseThrow(
                 () -> new IllegalArgumentException("ToUser not found")
         );
@@ -83,7 +83,7 @@ public class TransactionService {
                         || (toAccount.getSecondaryOwner() != null && toAccount.getSecondaryOwner().getUsername().equals(toUser.getUsername()))
                         // Implementing the Third Party feature
                         || toAccount.getThirdParty().getUsername().equals(toUser.getUsername());
-
+        if (!anyOwner) { throw new IllegalArgumentException("ToUser is not the owner of the account"); }
         return anyOwner;
     }
 
@@ -98,6 +98,7 @@ public class TransactionService {
                                 || (fromAccount.getSecondaryOwner() != null && fromAccount.getSecondaryOwner().getUsername().equals(fromUser.getUsername()))
                                 // Implementing the Third Party feature
                                 || fromAccount.getThirdParty().getUsername().equals(fromUser.getUsername());
+        if (!legitimateIssuer) { throw new IllegalArgumentException("FromUser is not the owner of the account"); }
         return legitimateIssuer;
     }
 
