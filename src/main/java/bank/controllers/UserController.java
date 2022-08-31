@@ -67,7 +67,7 @@ public class UserController {
 
     @PostMapping("/new-transaction")
     @ResponseStatus(value = HttpStatus.ACCEPTED)
-    public Transaction newTransaction(@RequestBody RegularTransaction transaction) {
+    public Transaction newTransaction(@RequestBody RegularTransaction transaction) throws Exception {
         return transactionService.executeTransaction(transaction);
     }
 

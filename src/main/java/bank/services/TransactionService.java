@@ -8,7 +8,6 @@ import bank.models.User;
 import bank.repositories.AccountRepository;
 import bank.repositories.TransactionRepository;
 import bank.repositories.UserRepository;
-import net.bytebuddy.implementation.bytecode.Throw;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.security.crypto.password.PasswordEncoder;
@@ -41,7 +40,7 @@ public class TransactionService {
         return executeTransaction(transaction);
     }
 
-    public Transaction executeTransaction(Transaction transaction){
+    public Transaction executeTransaction(Transaction transaction) throws Exception {
         boolean isValidBalance = isValidBalance(transaction);
         boolean isValidUsername = isValidUsername(transaction);
         boolean isValidIssuer = isValidIssuer(transaction);
@@ -64,11 +63,13 @@ public class TransactionService {
         }
     }
 
-    public boolean isValidBalance(Transaction transaction){
+    public boolean isValidBalance(Transaction transaction) throws Exception{
         BigDecimal availableAmount = accountRepository.findById(transaction.getFromAccountId()).orElseThrow(
                                                                 () -> new IllegalArgumentException("FromAccount not found")
                                                                 ).getBalance();
-        return availableAmount.compareTo(transaction.getAmount()) >= 0 && transaction.getAmount().compareTo(BigDecimal.ZERO) > 0;
+        boolean positiveBalance = transaction.getAmount().compareTo(BigDecimal.ZERO) > 0;
+        if (!positiveBalance) { throw new Exception("Balance needs to be positive"); }
+        return availableAmount.compareTo(transaction.getAmount()) >= 0;
     }
 
     public boolean isValidUsername(Transaction transaction){
