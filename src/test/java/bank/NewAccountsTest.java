@@ -23,7 +23,7 @@ import static bank.enums.Status.ACTIVE;
 import static org.junit.jupiter.api.Assertions.*;
 
 @SpringBootTest
-public class newAccountsTest {
+public class NewAccountsTest {
 
     @Autowired
     private CheckingRepository checkingRepository;

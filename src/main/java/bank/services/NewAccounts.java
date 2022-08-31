@@ -23,9 +23,7 @@ public class NewAccounts {
     @Autowired
     private SavingsRepository savingsRepository;
 
-    public CreditCard newCreditCard(CreditCard creditCardAccount) {
-        return creditCardRepository.save(creditCardAccount);
-    }
+    public CreditCard newCreditCard(CreditCard creditCardAccount) { return creditCardRepository.save(creditCardAccount); }
 
     public Savings newSavings(Savings savingsAccount) {
         return savingsRepository.save(savingsAccount);

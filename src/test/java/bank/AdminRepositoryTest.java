@@ -30,35 +30,35 @@ public class AdminRepositoryTest {
     private RoleRepository roleRepository;
 
     PasswordEncoder passwordEncoder = new BCryptPasswordEncoder();
-    Admin tester;
-    Role auxRole;
-    Admin checker;
+    Admin testerA;
+    Role auxRoleA;
+    Admin checkerA;
 
     @BeforeEach
     public void setUp() {
-        auxRole = new Role();
-        auxRole.setRole(ADMIN);
-        roleRepository.save(auxRole);
-        tester = new Admin();
-        tester.setUsername("Tester");
-        tester.setPassword(passwordEncoder.encode("adminpassword"));
-        tester.setRole(auxRole);
-        adminRepository.save(tester);
-        checker = adminService.findByUsername(tester.getUsername()).get();
+        auxRoleA = new Role();
+        auxRoleA.setRole(ADMIN);
+        roleRepository.save(auxRoleA);
+        testerA = new Admin();
+        testerA.setUsername("TesterA");
+        testerA.setPassword(passwordEncoder.encode("adminpassword"));
+        testerA.setRole(auxRoleA);
+        adminRepository.save(testerA);
+        checkerA = adminService.findByUsername(testerA.getUsername()).get();
     }
 
     @AfterEach
     public void tearDown() {
-        adminRepository.deleteAll();
-        roleRepository.deleteAll();
+        //adminRepository.deleteAll();
+        //roleRepository.deleteAll();
     }
 
     @Test
     void addNewAdminTest() {
-        assertEquals(checker.getUsername(), "Tester");
-        assertTrue(passwordEncoder.matches("adminpassword", checker.getPassword()));
-        assertNotEquals(checker.getPassword(), passwordEncoder.encode("adminpassword"));
-        assertEquals(checker.getRole().getRole(), ADMIN);
+        assertEquals(checkerA.getUsername(), "TesterA");
+        assertTrue(passwordEncoder.matches("adminpassword", checkerA.getPassword()));
+        assertNotEquals(checkerA.getPassword(), passwordEncoder.encode("adminpassword"));
+        assertEquals(checkerA.getRole().getRole(), ADMIN);
     }
 
     @Test
