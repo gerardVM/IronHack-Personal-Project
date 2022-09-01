@@ -43,61 +43,76 @@ Savings and CreditCard accounts have interests rates that are paid monthly.
 Checking and Savings Account need to have a minimum amount of balance. When going under that balance a penalty fee is applied (Just once)
 
 Following requests can be made:
+
 (GET)   http://socket/hello-world: To ckeck communication
 
 (POST)  http://socket/create-account-holder: To create a new Account Holder (Just Admins)
-	{
-	 "username"  : "userH",
-	 "password"  : "passwordH",
-	 "role"      : "ACCOUNT_HOLDER",
-	 "birthDate" : >>Not tried yet<<
-	}
+```json
+{
+	"username"  : "userH",
+	"password"  : "passwordH",
+	"role"      : "ACCOUNT_HOLDER",
+	"birthDate" : >>Not tried yet<<
+}
+```
 
 (POST)  http://socket/create-admin: To create a new Admin (Just Admins)
-	{
-	 "username"  : "userA",
-	 "password"  : "passwordA",
-	 "role"      : "ADMIN"
-	}
+```json
+{
+	"username"  : "userA",
+	"password"  : "passwordA",
+	"role"      : "ADMIN"
+}
+```
 
 (POST)  http://socket/create-third-party: To create a new Third Party user (Just Admins)
-	{
-	 "username"  : "userT",
-	 "password"  : "passwordT",
-	 "role"      : "ADMIN"
-	}
+```json
+{
+	"username"  : "userT",
+	"password"  : "passwordT",
+	"role"      : "ADMIN"
+}
+```
 
 (GET)   http://socket/balance: To check an account balance (Just Admins)
-	Example:	http://socket/balance?id=1
+	
+	http://socket/balance?id=1
 
 (PATCH) http://socket/modify-balance: To modifiy an account balance (Just Admins)
 * In this case a new transaction and a bot user are created to allow traceability of this operation.
-	Example:	http://socket/modify-balance/?id=1&amount=200
+	
+	
+	http://socket/modify-balance/?id=1&amount=200
 
 (GET)   http://socket/balance/{accountId}: To check your own balance (You need to be authenticated)
-	Example:	http://socket/balance/{accountId}
+	
+	http://socket/balance/{accountId}
 
 (POST)  http://socket/new-transaction: To make a new transaction
-	{
-	 "amount": 15,
-	 "fromAccountId":1,
-	 "toAccountId":3,
-	 "fromUsername":"auxdemoUser",
-	 "toUsername":"ThirdPartyUser",
-	 "signature":"password",
-    	 "concept": "Test transaction"
-	}
+```json
+{
+	"amount": 15,
+	"fromAccountId":1,
+	"toAccountId":3,
+	"fromUsername":"auxdemoUser",
+	"toUsername":"ThirdPartyUser",
+	"signature":"password",
+	"concept": "Test transaction"
+}
+```
 
 (POST)  http://socket/new-transaction: To make a new transaction in case you are a Third party
-	{
-	 "amount": 15,
-	 "fromAccountId":3,
-	 "toAccountId":1,
-	 "fromUsername":"ThirdPartyUser",
-	 "toUsername":"auxdemoUser",
-	 "accountSecretKey":"password",
-    	 "concept": "Test transaction"
-	}
+```json
+{
+	"amount": 15,
+	"fromAccountId":3,
+	"toAccountId":1,
+	"fromUsername":"ThirdPartyUser",
+	"toUsername":"auxdemoUser",
+	"accountSecretKey":"password",
+	"concept": "Test transaction"
+}
+```
 
 Conditions for a transaction to be successful:
 - Issuer needs to have enough balance
