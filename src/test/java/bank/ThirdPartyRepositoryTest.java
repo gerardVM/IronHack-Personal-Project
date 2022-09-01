@@ -5,9 +5,11 @@ import bank.models.roles.Admin;
 import bank.models.roles.ThirdParty;
 //import bank.repositories.AdminRepository;
 import bank.repositories.RoleRepository;
-import bank.repositories.ThirdPartyRepository;
+//import bank.repositories.ThirdPartyRepository;
 //import bank.services.AdminService;
-import bank.services.ThirdPartyService;
+//import bank.services.ThirdPartyService;
+import bank.repositories.UserRepository;
+import bank.services.UserService;
 import org.junit.jupiter.api.AfterEach;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
@@ -24,10 +26,12 @@ import static org.junit.jupiter.api.Assertions.assertEquals;
 @SpringBootTest
 public class ThirdPartyRepositoryTest {
     @Autowired
-    private ThirdPartyRepository thirdPartyRepository;
+    //private ThirdPartyRepository thirdPartyRepository;
+    private UserRepository userRepository;
 
     @Autowired
-    private ThirdPartyService thirdPartyService;
+    // private ThirdPartyService thirdPartyService;
+    private UserService userService;
 
     @Autowired
     private RoleRepository roleRepository;
@@ -45,18 +49,18 @@ public class ThirdPartyRepositoryTest {
         auxRole.setRole(THIRD_PARTY);
         tester.setRole(auxRole);
         roleRepository.save(auxRole);
-        thirdPartyRepository.save(tester);
+        userRepository.save(tester);
     }
 
     @AfterEach
     public void tearDown() {
-        thirdPartyRepository.deleteAll();
+        userRepository.deleteAll();
         roleRepository.deleteAll();
     }
 
     @Test
     void addNewThirdPartyTest() {
-        ThirdParty checker = thirdPartyService.findByUsername(tester.getUsername()).get();
+        ThirdParty checker = (ThirdParty) userService.findByUsername(tester.getUsername()).get();
         assertEquals(checker.getUsername(), "Tester");
         assertTrue(passwordEncoder.matches("$2a$12$p8qaYHmtyYnMgyMja2vsbe8K/vXs9NmjFaqfjBQ6Osro68ygS2ogW", checker.getPassword()));
         assertEquals(checker.getRole().getRole(), THIRD_PARTY);

@@ -8,7 +8,7 @@ import bank.models.roles.ThirdParty;
 // import bank.repositories.AccountHolderRepository;
 import bank.repositories.CheckingRepository;
 import bank.repositories.RoleRepository;
-import bank.repositories.ThirdPartyRepository;
+//import bank.repositories.ThirdPartyRepository;
 import bank.repositories.UserRepository;
 import bank.services.CheckingService;
 import bank.services.RoleService;
@@ -39,7 +39,7 @@ public class Testing {
     @Autowired
     private RoleService roleService;
     @Autowired
-    private ThirdPartyRepository thirdPartyRepository;
+    //private ThirdPartyRepository thirdPartyRepository;
 
     PasswordEncoder passwordEncoder = new BCryptPasswordEncoder();
     private Role auxRole;
@@ -98,7 +98,7 @@ public class Testing {
         thirdPartyUser.setPassword(passwordEncoder.encode("3333"));
         thirdPartyUser.setRole(roleService.findByRole(THIRD_PARTY).get());
         thirdPartyUser.setAccount(tester4);
-        thirdPartyRepository.save(thirdPartyUser);
+        userRepository.save(thirdPartyUser);
 
 
     }
