@@ -4,11 +4,9 @@ import bank.enums.Roles;
 import bank.models.accounts.CreditCard;
 import bank.models.Role;
 import bank.models.roles.AccountHolder;
-// import bank.repositories.AccountHolderRepository;
-import bank.repositories.CreditCardRepository;
+import bank.repositories.AccountRepository;
 import bank.repositories.RoleRepository;
 import bank.repositories.UserRepository;
-import bank.services.CreditCardService;
 import bank.services.RoleService;
 import org.junit.jupiter.api.AfterEach;
 import org.junit.jupiter.api.BeforeEach;
@@ -30,9 +28,8 @@ import static org.junit.jupiter.api.Assertions.*;
 public class CreditCardRepositoryTest {
 
     @Autowired
-    private CreditCardRepository creditCardRepository;
-    @Autowired
-    private CreditCardService creditCardService;
+    // private CreditCardRepository creditCardRepository;
+    private AccountRepository accountRepository;
     @Autowired
     // private AccountHolderRepository accountHolderRepository;
     private UserRepository userRepository;
@@ -69,13 +66,13 @@ public class CreditCardRepositoryTest {
         tester.setSecretKey(passwordEncoder.encode("1234"));
         // creditLimit has a set value of 100, so it is not necessary to set it here
         // interestRate has a set value of 0.2, so it is not necessary to set it here
-        creditCardRepository.save(tester);
-        checker = creditCardRepository.findByPrimaryOwner(tester.getPrimaryOwner()).get();
+        accountRepository.save(tester);
+        checker = (CreditCard) accountRepository.findByPrimaryOwner(tester.getPrimaryOwner()).get();
     }
 
     @AfterEach
     public void tearDown() {
-        creditCardRepository.deleteAll();
+        accountRepository.deleteAll();
         userRepository.deleteAll();
         roleRepository.deleteAll();
     }
@@ -95,7 +92,7 @@ public class CreditCardRepositoryTest {
     @Test
     void deleteSavingsAccountTest(){
         assertThrows(Exception.class, () -> { userRepository.deleteAll(); } );
-        assertDoesNotThrow(() -> { creditCardRepository.deleteAll(); } );
+        assertDoesNotThrow(() -> { accountRepository.deleteAll(); } );
         assertDoesNotThrow(() -> { userRepository.deleteAll(); } );
         assertDoesNotThrow(() -> { roleRepository.deleteAll(); } );
     }
@@ -103,24 +100,24 @@ public class CreditCardRepositoryTest {
     @Test
     void constraintsOfCreditCardAccount(){
         tester.setCreditLimit(BigDecimal.valueOf(99));
-        assertThrows(Exception.class, () -> { creditCardRepository.save(tester); } );
+        assertThrows(Exception.class, () -> { accountRepository.save(tester); } );
         tester.setCreditLimit(checker.getCreditLimit());
-        assertDoesNotThrow(() -> { creditCardRepository.save(tester); } );
+        assertDoesNotThrow(() -> { accountRepository.save(tester); } );
 
         tester.setCreditLimit(BigDecimal.valueOf(100001));
-        assertThrows(Exception.class, () -> { creditCardRepository.save(tester); } );
+        assertThrows(Exception.class, () -> { accountRepository.save(tester); } );
         tester.setCreditLimit(checker.getCreditLimit());
-        assertDoesNotThrow(() -> { creditCardRepository.save(tester); } );
+        assertDoesNotThrow(() -> { accountRepository.save(tester); } );
 
         tester.setInterestRate(0.099);
-        assertThrows(Exception.class, () -> { creditCardRepository.save(tester); } );
+        assertThrows(Exception.class, () -> { accountRepository.save(tester); } );
         tester.setInterestRate(checker.getInterestRate());
-        assertDoesNotThrow(() -> { creditCardRepository.save(tester); } );
+        assertDoesNotThrow(() -> { accountRepository.save(tester); } );
 
         tester.setInterestRate(0.201);
-        assertThrows(Exception.class, () -> { creditCardRepository.save(tester); } );
+        assertThrows(Exception.class, () -> { accountRepository.save(tester); } );
         tester.setInterestRate(checker.getInterestRate());
-        assertDoesNotThrow(() -> { creditCardRepository.save(tester); } );
+        assertDoesNotThrow(() -> { accountRepository.save(tester); } );
     }
 
     @Test

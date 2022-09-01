@@ -4,39 +4,26 @@ import bank.models.accounts.Checking;
 import bank.models.accounts.CreditCard;
 import bank.models.accounts.Savings;
 import bank.models.accounts.StudentChecking;
-// import bank.repositories.CheckingRepository;
 import bank.repositories.AccountRepository;
-import bank.repositories.CreditCardRepository;
-import bank.repositories.SavingsRepository;
-import bank.repositories.StudentCheckingRepository;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
 import java.time.LocalDate;
 
-// How to use static methods smoothly
-
 @Service
 public class NewAccounts {
     @Autowired
-    //private CheckingRepository checkingRepository;
     private AccountRepository accountRepository;
-    @Autowired
-    private StudentCheckingRepository studentCheckingRepository;
-    @Autowired
-    private CreditCardRepository creditCardRepository;
-    @Autowired
-    private SavingsRepository savingsRepository;
 
-    public CreditCard newCreditCard(CreditCard creditCardAccount) { return creditCardRepository.save(creditCardAccount); }
+    public CreditCard newCreditCard(CreditCard creditCardAccount) { return accountRepository.save(creditCardAccount); }
 
     public Savings newSavings(Savings savingsAccount) {
-        return savingsRepository.save(savingsAccount);
+        return accountRepository.save(savingsAccount);
     }
 
     public void newChecking(Checking checkingAccount) {
         if (getAge(checkingAccount.getPrimaryOwner().getBirthDate()) < 24) {
-            studentCheckingRepository.save(newStudentChecking(checkingAccount));
+            accountRepository.save(newStudentChecking(checkingAccount));
         } else {
             accountRepository.save(checkingAccount);
         }

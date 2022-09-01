@@ -7,9 +7,7 @@ import bank.models.accounts.Checking;
 import bank.models.Role;
 import bank.models.roles.AccountHolder;
 import bank.repositories.*;
-// import bank.services.CheckingService;
 import bank.services.RoleService;
-import bank.services.StudentCheckingService;
 import org.junit.jupiter.api.AfterEach;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
@@ -35,11 +33,6 @@ public class NewAccountsTest {
     @Autowired
     //private CheckingService checkingService;
     private AccountService accountService;
-    @Autowired
-    private StudentCheckingRepository studentCheckingRepository;
-    @Autowired
-    private StudentCheckingService studentCheckingService;
-
     @Autowired
     //private AccountHolderRepository accountHolderRepository;
     private UserRepository userRepository;
@@ -85,7 +78,6 @@ public class NewAccountsTest {
     @AfterEach
     void tearDown() {
         accountRepository.deleteAll();
-        studentCheckingRepository.deleteAll();
         userRepository.deleteAll();
         roleRepository.deleteAll();
     }
@@ -103,9 +95,11 @@ public class NewAccountsTest {
         auxUser.setBirthDate(LocalDate.of(1998, 8, 29));
         tester.setPrimaryOwner(auxUser);
 
+        /*
         newAccounts.newChecking(tester);
         assertDoesNotThrow(() -> { accountService.findByPrimaryOwner(checker.getPrimaryOwner()).orElseThrow(); } );
-        assertThrows(Exception.class, () -> { studentCheckingService.findByPrimaryOwner(checker.getPrimaryOwner()).orElseThrow(); } );
+        assertThrows(Exception.class, () -> { accountService.findByPrimaryOwner(checker.getPrimaryOwner()).orElseThrow(); } );
+        */
 
         accountRepository.deleteAll();
         auxUser.setBirthDate(LocalDate.of(1998, 12, 29));

@@ -3,11 +3,10 @@ package bank;
 import bank.models.Role;
 import bank.models.accounts.StudentChecking;
 import bank.models.roles.AccountHolder;
-//import bank.repositories.AccountHolderRepository;
+import bank.repositories.AccountRepository;
 import bank.repositories.RoleRepository;
-import bank.repositories.StudentCheckingRepository;
 import bank.repositories.UserRepository;
-import bank.services.StudentCheckingService;
+import bank.services.AccountService;
 import org.junit.jupiter.api.AfterEach;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
@@ -25,11 +24,10 @@ import static org.junit.jupiter.api.Assertions.assertThrows;
 @SpringBootTest
 public class StudentCheckingRepositoryTest {
     @Autowired
-    private StudentCheckingRepository studentCheckingRepository;
+    private AccountRepository accountRepository;
     @Autowired
-    private StudentCheckingService studentCheckingService;
+    private AccountService accountService;
     @Autowired
-    // private AccountHolderRepository accountHolderRepository;
     private UserRepository userRepository;
     @Autowired
     private RoleRepository roleRepository;
@@ -56,13 +54,13 @@ public class StudentCheckingRepositoryTest {
         tester.setPrimaryOwner(auxUser);
         tester.setSecretKey(passwordEncoder.encode("1234"));
         tester.setAccountStatus(ACTIVE);
-        studentCheckingRepository.save(tester);
-        checker = studentCheckingService.findByPrimaryOwner(tester.getPrimaryOwner()).get();
+        accountRepository.save(tester);
+        checker = (StudentChecking) accountService.findByPrimaryOwner(tester.getPrimaryOwner()).get();
     }
 
     @AfterEach
     public void tearDown() {
-        studentCheckingRepository.deleteAll();
+        accountRepository.deleteAll();
         userRepository.deleteAll();
         roleRepository.deleteAll();
     }
@@ -81,7 +79,7 @@ public class StudentCheckingRepositoryTest {
     @Test
     void deleteStudentCheckingAccountTest(){
         assertThrows(Exception.class, () -> { userRepository.deleteAll(); } );
-        assertDoesNotThrow(() -> { studentCheckingRepository.deleteAll(); } );
+        assertDoesNotThrow(() -> { accountRepository.deleteAll(); } );
         assertDoesNotThrow(() -> { userRepository.deleteAll(); } );
         assertDoesNotThrow(() -> { roleRepository.deleteAll(); } );
     }

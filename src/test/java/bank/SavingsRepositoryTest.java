@@ -4,12 +4,11 @@ import bank.enums.Roles;
 import bank.models.Role;
 import bank.models.accounts.Savings;
 import bank.models.roles.AccountHolder;
-// import bank.repositories.AccountHolderRepository;
+import bank.repositories.AccountRepository;
 import bank.repositories.RoleRepository;
-import bank.repositories.SavingsRepository;
 import bank.repositories.UserRepository;
+import bank.services.AccountService;
 import bank.services.RoleService;
-import bank.services.SavingsService;
 import org.junit.jupiter.api.AfterEach;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
@@ -31,16 +30,16 @@ import static org.junit.jupiter.api.Assertions.assertThrows;
 @SpringBootTest
 public class SavingsRepositoryTest {
     @Autowired
-    private SavingsRepository savingsRepository;
-    @Autowired
-    private SavingsService savingsService;
-    @Autowired
     // private AccountHolderRepository accountHolderRepository;
     private UserRepository userRepository;
     @Autowired
     private RoleRepository roleRepository;
     @Autowired
     private RoleService roleService;
+    @Autowired
+    private AccountService accountService;
+    @Autowired
+    private AccountRepository accountRepository;
 
     PasswordEncoder passwordEncoder = new BCryptPasswordEncoder();
     Savings tester;
@@ -72,13 +71,13 @@ public class SavingsRepositoryTest {
         // interestRate has a default value. So, we don't need to set it.
         // creationDate has a default value. So, we don't need to set it.
         tester.setAccountStatus(ACTIVE);
-        savingsRepository.save(tester);
-        checker = savingsRepository.findByPrimaryOwner(tester.getPrimaryOwner()).get();
+        accountRepository.save(tester);
+        checker = (Savings) accountService.findByPrimaryOwner(tester.getPrimaryOwner()).get();
     }
 
     @AfterEach
     public void tearDown() {
-        savingsRepository.deleteAll();
+        accountRepository.deleteAll();
         userRepository.deleteAll();
         roleRepository.deleteAll();
     }
@@ -99,7 +98,7 @@ public class SavingsRepositoryTest {
     @Test
     void deleteSavingsAccountTest(){
         assertThrows(Exception.class, () -> { userRepository.deleteAll(); } );
-        assertDoesNotThrow(() -> { savingsRepository.deleteAll(); } );
+        assertDoesNotThrow(() -> { accountRepository.deleteAll(); } );
         assertDoesNotThrow(() -> { userRepository.deleteAll(); } );
         assertDoesNotThrow(() -> { roleRepository.deleteAll(); } );
     }
@@ -107,19 +106,19 @@ public class SavingsRepositoryTest {
     @Test
     void constraintsOfSavingsAccount(){
         tester.setMinimumBalance(BigDecimal.valueOf(99));
-        assertThrows(Exception.class, () -> { savingsRepository.save(tester); });
+        assertThrows(Exception.class, () -> { accountRepository.save(tester); });
         tester.setMinimumBalance(checker.getMinimumBalance());
-        assertDoesNotThrow(() -> { savingsRepository.save(tester); });
+        assertDoesNotThrow(() -> { accountRepository.save(tester); });
 
         tester.setMinimumBalance(BigDecimal.valueOf(1001));
-        assertThrows(Exception.class, () -> { savingsRepository.save(tester); });
+        assertThrows(Exception.class, () -> { accountRepository.save(tester); });
         tester.setMinimumBalance(checker.getMinimumBalance());
-        assertDoesNotThrow(() -> { savingsRepository.save(tester); });
+        assertDoesNotThrow(() -> { accountRepository.save(tester); });
 
         tester.setInterestRate(0.51);
-        assertThrows(Exception.class, () -> { savingsRepository.save(tester); });
+        assertThrows(Exception.class, () -> { accountRepository.save(tester); });
         tester.setInterestRate(checker.getInterestRate());
-        assertDoesNotThrow(() -> { savingsRepository.save(tester); });
+        assertDoesNotThrow(() -> { accountRepository.save(tester); });
     }
 
     @Test
