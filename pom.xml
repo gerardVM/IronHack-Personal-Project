@@ -76,13 +76,9 @@
 			</plugin>
 			<plugin>
 				<groupId>org.apache.maven.plugins</groupId>
-				<artifactId>maven-javadoc-plugin</artifactId> <!-- Check if this is correct -->
-				<version>3.0.0</version>
-				<configuration>
-					<source>1.8</source>
-				</configuration>
+				<artifactId>maven-surefire-plugin</artifactId>
+				<version>2.19.1</version>
 			</plugin>
-			<!-- Might be unnecessary -->
 			<plugin>
 				<!-- Build an executable JAR -->
 				<groupId>org.apache.maven.plugins</groupId>
@@ -92,11 +88,12 @@
 					<archive>
 						<manifest>
 							<!-- <mainClass>com.src.main.java.Main</mainClass> -->
-							<mainClass>bank/BankApplication.java</mainClass>
+							<mainClass>bank.BankApplication</mainClass>
 						</manifest>
 					</archive>
 				</configuration>
 			</plugin>
+
 		</plugins>
 	</build>
 
