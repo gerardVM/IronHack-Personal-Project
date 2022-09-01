@@ -20,6 +20,7 @@ import java.util.List;
 
 import static bank.enums.Roles.*;
 import static bank.enums.Status.ACTIVE;
+import static bank.enums.Status.FROZEN;
 
 @Service
 public class Testing {
@@ -76,7 +77,7 @@ public class Testing {
         demo3.setBalance(BigDecimal.valueOf(500));
         demo3.setPrimaryOwner(auxdemoUser3);
         demo3.setSecretKey(passwordEncoder.encode("4321"));
-        demo3.setAccountStatus(ACTIVE);
+        demo3.setAccountStatus(FROZEN);
         accountRepository.save(demo3);
 
         Checking demo4 = new Checking();

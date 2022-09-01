@@ -5,6 +5,9 @@ import bank.models.Transactions.ThirdPartyTransaction;
 import bank.models.accounts.Account;
 import bank.models.Transactions.Transaction;
 import bank.models.User;
+import bank.models.accounts.Checking;
+import bank.models.accounts.Savings;
+import bank.models.accounts.StudentChecking;
 import bank.repositories.AccountRepository;
 import bank.repositories.TransactionRepository;
 import bank.repositories.UserRepository;
@@ -12,8 +15,12 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
-
 import java.math.BigDecimal;
+import java.time.LocalDateTime;
+import java.util.List;
+
+import static bank.enums.Status.FROZEN;
+
 
 @Service
 public class TransactionService {
@@ -45,7 +52,11 @@ public class TransactionService {
         boolean isValidUsername = isValidUsername(transaction);
         boolean isValidIssuer = isValidIssuer(transaction);
         boolean isValidSignature = isValidSignature(transaction);
-        if ( isValidBalance && isValidUsername && isValidIssuer && isValidSignature){
+        boolean isAnyFrozen = isAnyFrozen(transaction);
+        volumeFraudDetection(transaction);
+        replicationDetection(transaction);
+        averageFraudDetection(transaction);
+        if ( isValidBalance && isValidUsername && isValidIssuer && isValidSignature && !isAnyFrozen) {
             // Keys needs to be removed from the transaction object before saving it to the database
             if (transaction instanceof RegularTransaction) {
                 ((RegularTransaction) transaction).setSignature("ACCEPTED");
@@ -83,7 +94,9 @@ public class TransactionService {
                         || (toAccount.getSecondaryOwner() != null && toAccount.getSecondaryOwner().getUsername().equals(toUser.getUsername()))
                         // Implementing the Third Party feature
                         || toAccount.getThirdParty().getUsername().equals(toUser.getUsername());
+        boolean sameUser = toUser.getUsername().equals(transaction.getFromUsername());
         if (!anyOwner) { throw new IllegalArgumentException("ToUser is not the owner of the account"); }
+        if (sameUser) { throw new IllegalArgumentException("FromUser and ToUser are the same"); }
         return anyOwner;
     }
 
@@ -120,5 +133,116 @@ public class TransactionService {
         }
     }
 
+    public boolean isAnyFrozen(Transaction transaction){
+        Account fromAccount = accountRepository.findById(transaction.getFromAccountId()).orElseThrow(
+                () -> new IllegalArgumentException("FromAccount not found")
+        );
+        Account toAccount = accountRepository.findById(transaction.getToAccountId()).orElseThrow(
+                () -> new IllegalArgumentException("ToAccount not found")
+        );
+        boolean isAnyFrozen = false;
+        if (fromAccount instanceof Checking){
+            switch (((Checking) fromAccount).getAccountStatus()){
+                case FROZEN:
+                    isAnyFrozen = true;
+                    break;
+            }
+        } else if (fromAccount instanceof Savings){
+            switch (((Savings) fromAccount).getAccountStatus()){
+                case FROZEN:
+                    isAnyFrozen = true;
+                    break;
+            }
+        } else if (fromAccount instanceof StudentChecking){
+            switch (((StudentChecking) fromAccount).getAccountStatus()){
+                case FROZEN:
+                    isAnyFrozen = true;
+                    break;
+            }
+        }
+        if (isAnyFrozen) { throw new IllegalArgumentException("Account FROM is frozen"); }
+
+        if (toAccount instanceof Checking){
+            switch (((Checking) toAccount).getAccountStatus()){
+                case FROZEN:
+                    isAnyFrozen = true;
+                    break;
+            }
+        } else if (toAccount instanceof Savings){
+            switch (((Savings) toAccount).getAccountStatus()){
+                case FROZEN:
+                    isAnyFrozen = true;
+                    break;
+            }
+        } else if (toAccount instanceof StudentChecking){
+            switch (((StudentChecking) toAccount).getAccountStatus()){
+                case FROZEN:
+                    isAnyFrozen = true;
+                    break;
+            }
+        }
+        if (isAnyFrozen) { throw new IllegalArgumentException("Account TO is frozen"); }
+        return isAnyFrozen;
+    }
+
+    public void volumeFraudDetection(Transaction transaction){
+        Account fromAccount = accountRepository.findById(transaction.getFromAccountId()).orElseThrow(
+                () -> new IllegalArgumentException("FromAccount not found")
+        );
+        transaction.setTimestamp(LocalDateTime.now());
+        List<Transaction> transactionList = findByFromAccountId(fromAccount.getId());
+        for (Transaction t : transactionList){
+            if (t.getTimestamp().isAfter(transaction.getTimestamp().minusSeconds(1))){
+                if (fromAccount instanceof Checking) { ((Checking) fromAccount).setAccountStatus(FROZEN); }
+                else if (fromAccount instanceof Savings) { ((Savings) fromAccount).setAccountStatus(FROZEN); }
+                else if (fromAccount instanceof StudentChecking) { ((StudentChecking) fromAccount).setAccountStatus(FROZEN); }
+                accountRepository.save(fromAccount);
+                throw new IllegalArgumentException("Volume fraud detected. From Account is now FROZEN");
+            }
+        }
+    }
+    public void replicationDetection(Transaction transaction) {
+        Account fromAccount = accountRepository.findById(transaction.getFromAccountId()).orElseThrow(
+                () -> new IllegalArgumentException("FromAccount not found")
+        );
+        transaction.setTimestamp(LocalDateTime.now());
+        List<Transaction> transactionList = findByFromAccountId(fromAccount.getId());
+        for (Transaction t : transactionList){
+            if ((t.getTimestamp().isAfter(transaction.getTimestamp().minusMinutes(1)))
+               && (t.getAmount().compareTo(transaction.getAmount()) == 0)){
+                throw new IllegalArgumentException("Duplicate transaction. Wait for " +
+                        (t.getTimestamp().getSecond() + 60 - transaction.getTimestamp().getSecond()) + " seconds");
+            }
+        }
+    }
+
+    public void averageFraudDetection(Transaction transaction) {
+        Account fromAccount = accountRepository.findById(transaction.getFromAccountId()).orElseThrow(
+                () -> new IllegalArgumentException("FromAccount not found")
+        );
+        for (Transaction t : findByFromAccountId(fromAccount.getId())){
+            if (((double) lastTransactions(transaction)) > lastTransactions(t)*1.5) {
+                throw new IllegalArgumentException("Average fraud detected. From Account is now FROZEN");
+            }
+        }
+    }
+
+    public int lastTransactions(Transaction transaction) {
+        Account fromAccount = accountRepository.findById(transaction.getFromAccountId()).orElseThrow(
+                () -> new IllegalArgumentException("FromAccount not found")
+        );
+        LocalDateTime thisTransactionTime = transaction.getTimestamp();
+        LocalDateTime firstTransactionTime = thisTransactionTime.minusHours(24);
+        List<Transaction> list1 = findByTimestampBetween(firstTransactionTime, thisTransactionTime);
+        return list1.size();
+    }
+
+    private List<Transaction> findByTimestampBetween(LocalDateTime firstTransactionTime, LocalDateTime thisTransactionTime) {
+        return transactionRepository.findByTimestampBetween(firstTransactionTime, thisTransactionTime);
+    }
+
+    private List<Transaction> findByFromAccountId(Long id) {
+        return transactionRepository.findByFromAccountId(id);
+    }
 
 }

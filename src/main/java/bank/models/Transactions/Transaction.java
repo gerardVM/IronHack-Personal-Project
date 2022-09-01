@@ -8,6 +8,8 @@ import lombok.Setter;
 import javax.persistence.*;
 import javax.validation.constraints.NotNull;
 import java.math.BigDecimal;
+import java.time.LocalDate;
+import java.time.LocalDateTime;
 
 @Getter
 @Setter
@@ -29,5 +31,6 @@ public class Transaction {
     private String fromUsername;
     @NotNull
     private String toUsername;
+    private LocalDateTime timestamp;
     private String concept;
 }
