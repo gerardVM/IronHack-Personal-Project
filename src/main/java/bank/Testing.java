@@ -5,16 +5,10 @@ import bank.models.accounts.Checking;
 import bank.models.Role;
 import bank.models.roles.AccountHolder;
 import bank.models.roles.ThirdParty;
-// import bank.repositories.AccountHolderRepository;
 import bank.repositories.AccountRepository;
-//import bank.repositories.CheckingRepository;
 import bank.repositories.RoleRepository;
-//import bank.repositories.ThirdPartyRepository;
 import bank.repositories.UserRepository;
-//import bank.services.CheckingService;
-import bank.services.AccountService;
 import bank.services.RoleService;
-import org.hibernate.Session;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.security.crypto.password.PasswordEncoder;
@@ -30,78 +24,71 @@ import static bank.enums.Status.ACTIVE;
 @Service
 public class Testing {
     @Autowired
-    //private CheckingRepository checkingRepository;
     private AccountRepository accountRepository;
-    //@Autowired
-    //private CheckingService checkingService;
-    //private AccountService accountService;
     @Autowired
-    //private AccountHolderRepository accountHolderRepository;
     private UserRepository userRepository;
     @Autowired
     private RoleRepository roleRepository;
     @Autowired
     private RoleService roleService;
-    @Autowired
-    //private ThirdPartyRepository thirdPartyRepository;
 
     PasswordEncoder passwordEncoder = new BCryptPasswordEncoder();
-    private Role auxRole;
+    private Role auxdemoRole;
 
     public void addExampleData() {
         List<Roles> roles = List.of(ADMIN, ACCOUNT_HOLDER, THIRD_PARTY);
         for (Roles role : roles) {
             if (!roleService.findByRole(role).isPresent()) {
-                auxRole = new Role();
-                auxRole.setRole(role);
-                roleRepository.save(auxRole);
+                auxdemoRole = new Role();
+                auxdemoRole.setRole(role);
+                roleRepository.save(auxdemoRole);
             }
         }
 
-        AccountHolder auxUser = new AccountHolder();
-        auxUser.setUsername("AuxUser");
-        auxUser.setPassword(passwordEncoder.encode("password"));
-        auxUser.setRole(roleService.findByRole(ACCOUNT_HOLDER).get());
-        auxUser.setBirthDate(LocalDate.of(1990, 1, 1));
-        userRepository.save(auxUser);
-        Checking tester = new Checking();
-        tester.setBalance(BigDecimal.valueOf(250));
-        tester.setPrimaryOwner(auxUser);
-        tester.setSecretKey(passwordEncoder.encode("1234"));
-        tester.setAccountStatus(ACTIVE);
-        accountRepository.save(tester);
+        AccountHolder auxdemoUser = new AccountHolder();
+        auxdemoUser.setUsername("auxdemoUser");
+        auxdemoUser.setPassword(passwordEncoder.encode("password"));
+        auxdemoUser.setRole(roleService.findByRole(ACCOUNT_HOLDER).get());
+        auxdemoUser.setBirthDate(LocalDate.of(1990, 1, 1));
+        userRepository.save(auxdemoUser);
+        Checking demo = new Checking();
+        demo.setBalance(BigDecimal.valueOf(250));
+        demo.setPrimaryOwner(auxdemoUser);
+        demo.setSecretKey(passwordEncoder.encode("1234"));
+        demo.setAccountStatus(ACTIVE);
+        accountRepository.save(demo);
 
 
-        AccountHolder auxUser2 = new AccountHolder();
-        auxUser2.setUsername("AuxAdmin");
-        auxUser2.setPassword(passwordEncoder.encode("1234"));
-        auxUser2.setRole(roleService.findByRole(ADMIN).get());
-        auxUser2.setBirthDate(LocalDate.of(1991, 1, 1));
-        userRepository.save(auxUser2);
+        AccountHolder auxdemoUser2 = new AccountHolder();
+        auxdemoUser2.setUsername("auxdemoAdmin");
+        auxdemoUser2.setPassword(passwordEncoder.encode("1234"));
+        auxdemoUser2.setRole(roleService.findByRole(ADMIN).get());
+        auxdemoUser2.setBirthDate(LocalDate.of(1991, 1, 1));
+        userRepository.save(auxdemoUser2);
 
-        AccountHolder auxUser3 = new AccountHolder();
-        auxUser3.setUsername("AuxUser3");
-        auxUser3.setPassword(passwordEncoder.encode("4321"));
-        auxUser3.setRole(roleService.findByRole(ACCOUNT_HOLDER).get());
-        auxUser3.setBirthDate(LocalDate.of(1992, 1, 1));
-        userRepository.save(auxUser3);
-        Checking tester3 = new Checking();
-        tester3.setBalance(BigDecimal.valueOf(500));
-        tester3.setPrimaryOwner(auxUser3);
-        tester3.setSecretKey(passwordEncoder.encode("4321"));
-        tester3.setAccountStatus(ACTIVE);
-        accountRepository.save(tester3);
+        AccountHolder auxdemoUser3 = new AccountHolder();
+        auxdemoUser3.setUsername("auxdemoUser3");
+        auxdemoUser3.setPassword(passwordEncoder.encode("4321"));
+        auxdemoUser3.setRole(roleService.findByRole(ACCOUNT_HOLDER).get());
+        auxdemoUser3.setBirthDate(LocalDate.of(1992, 1, 1));
+        userRepository.save(auxdemoUser3);
+        Checking demo3 = new Checking();
+        demo3.setBalance(BigDecimal.valueOf(500));
+        demo3.setPrimaryOwner(auxdemoUser3);
+        demo3.setSecretKey(passwordEncoder.encode("4321"));
+        demo3.setAccountStatus(ACTIVE);
+        accountRepository.save(demo3);
 
-        Checking tester4 = new Checking();
-        tester4.setBalance(BigDecimal.valueOf(1000));
-        tester4.setSecretKey(passwordEncoder.encode("3232"));
-        tester4.setAccountStatus(ACTIVE);
-        accountRepository.save(tester4);
+        Checking demo4 = new Checking();
+        demo4.setBalance(BigDecimal.valueOf(1000));
+        demo4.setSecretKey(passwordEncoder.encode("3232"));
+        demo4.setAccountStatus(ACTIVE);
+        accountRepository.save(demo4);
         ThirdParty thirdPartyUser = new ThirdParty();
         thirdPartyUser.setUsername("ThirdPartyUser");
         thirdPartyUser.setPassword(passwordEncoder.encode("3333"));
         thirdPartyUser.setRole(roleService.findByRole(THIRD_PARTY).get());
-        thirdPartyUser.setAccount(tester4);
+        thirdPartyUser.setAccount(demo4);
         userRepository.save(thirdPartyUser);
 
 

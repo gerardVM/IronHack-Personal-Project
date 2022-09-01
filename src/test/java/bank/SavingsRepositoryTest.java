@@ -77,9 +77,9 @@ public class SavingsRepositoryTest {
 
     @AfterEach
     public void tearDown() {
-        accountRepository.deleteAll();
-        userRepository.deleteAll();
-        roleRepository.deleteAll();
+        accountRepository.deleteById(checker.getId());
+        userRepository.deleteById(checker.getPrimaryOwner().getId());
+        roleRepository.deleteById(checker.getPrimaryOwner().getRole().getId());
     }
 
     @Test
@@ -94,13 +94,6 @@ public class SavingsRepositoryTest {
         assertEquals(0.0025, checker.getInterestRate());
         assertTrue  (checker.getCreationDate().equals(LocalDate.now()));
         assertEquals(ACTIVE, checker.getAccountStatus());
-    }
-    @Test
-    void deleteSavingsAccountTest(){
-        assertThrows(Exception.class, () -> { userRepository.deleteAll(); } );
-        assertDoesNotThrow(() -> { accountRepository.deleteAll(); } );
-        assertDoesNotThrow(() -> { userRepository.deleteAll(); } );
-        assertDoesNotThrow(() -> { roleRepository.deleteAll(); } );
     }
 
     @Test

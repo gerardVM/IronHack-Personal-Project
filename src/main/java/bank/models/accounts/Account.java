@@ -31,7 +31,7 @@ public abstract class Account {
     @NotNull
     private BigDecimal balance;
     @NotNull
-    private static BigDecimal penaltyFee = BigDecimal.valueOf(40);
+    private final BigDecimal penaltyFee = BigDecimal.valueOf(40);
     private boolean penaltyApplied = false;
     @NotNull
     private String secretKey;
@@ -43,7 +43,4 @@ public abstract class Account {
     private AccountHolder secondaryOwner;
     @OneToOne(mappedBy = "account", fetch = FetchType.LAZY)
     private ThirdParty thirdParty;
-    public BigDecimal getPenaltyFee() {
-        return this.penaltyFee;
-    }
 }

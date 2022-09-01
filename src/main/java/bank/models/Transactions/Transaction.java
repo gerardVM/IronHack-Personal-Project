@@ -29,4 +29,5 @@ public class Transaction {
     private String fromUsername;
     @NotNull
     private String toUsername;
+    private String concept;
 }

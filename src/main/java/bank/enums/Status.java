@@ -1,5 +1,5 @@
 package bank.enums;
 
 public enum Status {
-    ACTIVE, FROZEN
+    ACTIVE, FROZEN, INTERNAL
 }

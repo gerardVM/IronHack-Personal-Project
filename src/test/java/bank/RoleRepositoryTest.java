@@ -1,5 +1,6 @@
 package bank;
 
+import bank.enums.Roles;
 import bank.models.Role;
 import bank.repositories.RoleRepository;
 import bank.services.RoleService;
@@ -9,7 +10,9 @@ import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
 
-import static bank.enums.Roles.ADMIN;
+import java.util.List;
+
+import static bank.enums.Roles.*;
 import static org.junit.jupiter.api.Assertions.assertEquals;
 
 @SpringBootTest
@@ -23,9 +26,14 @@ public class RoleRepositoryTest {
 
     @BeforeEach
     public void setUp() {
-        tester = new Role();
-        tester.setRole(ADMIN);
-        roleRepository.save(tester);
+        List<Roles> roles = List.of(ADMIN, ACCOUNT_HOLDER, THIRD_PARTY);
+        for (Roles role : roles) {
+            if (!roleService.findByRole(role).isPresent()) {
+                tester = new Role();
+                tester.setRole(role);
+                roleRepository.save(tester);
+            }
+        }
     }
 
     @AfterEach
@@ -35,7 +43,7 @@ public class RoleRepositoryTest {
 
     @Test
     void addRoleTest() {
-        Role checker = roleService.findByRole(tester.getRole()).get();
-        assertEquals(checker.getRole(), ADMIN);
+        Role checker = roleService.findByRole(ADMIN).get();
+        assertEquals(ADMIN, checker.getRole());
     }
 }
