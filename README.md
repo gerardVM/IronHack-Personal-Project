@@ -10,7 +10,7 @@ This Bank System allows us to make requests in order to:
 - Check balance of your account (You need authentication)
 - Send funds to account of this bank or to other third parties
 - Receive funds
-- Receive interests for your Savings or Credit Card Account
+- Receive interests in your Savings or Credit Card Account
 
 ## Diagrams
 
@@ -31,7 +31,7 @@ Class Diagram
 ## Usage
 
 There are three types of users:
-Admins, AccountHolders and Third PArties
+Admins, AccountHolders and Third Parties
 
 There are four types of accounts: Checking, Savings, Student Checking or CreditCard Accounts.
 
@@ -44,7 +44,7 @@ Checking and Savings Account need to have a minimum amount of balance. When goin
 
 Following requests can be made:
 
-(GET)   http://socket/hello-world: To ckeck communication
+(GET)   http://socket/hello-world: To check communication
 
 (POST)  http://socket/create-account-holder: To create a new Account Holder (Just Admins)
 ```json
@@ -52,7 +52,7 @@ Following requests can be made:
 	"username"  : "userH",
 	"password"  : "passwordH",
 	"role"      : "ACCOUNT_HOLDER",
-	"birthDate" : >>Not tried yet<<
+	"birthDate" : ">>Not tried yet<<"
 }
 ```
 
@@ -79,8 +79,6 @@ Following requests can be made:
 	http://socket/balance?id=1
 
 (PATCH) http://socket/modify-balance: To modifiy an account balance (Just Admins)
-* In this case a new transaction and a bot user are created to allow traceability of this operation.
-	
 	
 	http://socket/modify-balance/?id=1&amount=200
 
