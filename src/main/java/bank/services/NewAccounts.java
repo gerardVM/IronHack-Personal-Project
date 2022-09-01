@@ -4,7 +4,8 @@ import bank.models.accounts.Checking;
 import bank.models.accounts.CreditCard;
 import bank.models.accounts.Savings;
 import bank.models.accounts.StudentChecking;
-import bank.repositories.CheckingRepository;
+// import bank.repositories.CheckingRepository;
+import bank.repositories.AccountRepository;
 import bank.repositories.CreditCardRepository;
 import bank.repositories.SavingsRepository;
 import bank.repositories.StudentCheckingRepository;
@@ -18,7 +19,8 @@ import java.time.LocalDate;
 @Service
 public class NewAccounts {
     @Autowired
-    private CheckingRepository checkingRepository;
+    //private CheckingRepository checkingRepository;
+    private AccountRepository accountRepository;
     @Autowired
     private StudentCheckingRepository studentCheckingRepository;
     @Autowired
@@ -36,7 +38,7 @@ public class NewAccounts {
         if (getAge(checkingAccount.getPrimaryOwner().getBirthDate()) < 24) {
             studentCheckingRepository.save(newStudentChecking(checkingAccount));
         } else {
-            checkingRepository.save(checkingAccount);
+            accountRepository.save(checkingAccount);
         }
     }
 

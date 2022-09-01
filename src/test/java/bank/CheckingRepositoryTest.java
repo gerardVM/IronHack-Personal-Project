@@ -4,10 +4,12 @@ import bank.models.accounts.Checking;
 import bank.models.Role;
 import bank.models.roles.AccountHolder;
 //import bank.repositories.AccountHolderRepository;
-import bank.repositories.CheckingRepository;
+//import bank.repositories.CheckingRepository;
+import bank.repositories.AccountRepository;
 import bank.repositories.RoleRepository;
 import bank.repositories.UserRepository;
-import bank.services.CheckingService;
+// import bank.services.CheckingService;
+import bank.services.AccountService;
 import org.junit.jupiter.api.AfterEach;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
@@ -27,9 +29,8 @@ import static org.junit.jupiter.api.Assertions.assertEquals;
 @SpringBootTest
 public class CheckingRepositoryTest {
     @Autowired
-    private CheckingRepository checkingRepository;
-    @Autowired
-    private CheckingService checkingService;
+    //private CheckingRepository checkingRepository;
+    private AccountRepository accountRepository;
     @Autowired
     // private AccountHolderRepository accountHolderRepository;
     private UserRepository userRepository;
@@ -58,13 +59,13 @@ public class CheckingRepositoryTest {
         tester.setPrimaryOwner(auxUser);
         tester.setSecretKey(passwordEncoder.encode("1234"));
         tester.setAccountStatus(ACTIVE);
-        checkingRepository.save(tester);
-        checker = checkingRepository.findByPrimaryOwner(tester.getPrimaryOwner()).get();
+        accountRepository.save(tester);
+        checker = (Checking) accountRepository.findByPrimaryOwner(tester.getPrimaryOwner()).get();
     }
 
     @AfterEach
     void tearDown() {
-        checkingRepository.deleteAll();
+        accountRepository.deleteAll();
         userRepository.deleteAll();
         roleRepository.deleteAll();
     }
@@ -85,7 +86,7 @@ public class CheckingRepositoryTest {
     @Test
     void deleteCreditCardAccountTest(){
         assertThrows(Exception.class, () -> { userRepository.deleteAll(); } );
-        assertDoesNotThrow(() -> { checkingRepository.deleteAll(); } );
+        assertDoesNotThrow(() -> { accountRepository.deleteAll(); } );
         assertDoesNotThrow(() -> { userRepository.deleteAll(); } );
         assertDoesNotThrow(() -> { roleRepository.deleteAll(); } );
     }

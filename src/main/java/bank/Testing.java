@@ -6,11 +6,13 @@ import bank.models.Role;
 import bank.models.roles.AccountHolder;
 import bank.models.roles.ThirdParty;
 // import bank.repositories.AccountHolderRepository;
-import bank.repositories.CheckingRepository;
+import bank.repositories.AccountRepository;
+//import bank.repositories.CheckingRepository;
 import bank.repositories.RoleRepository;
 //import bank.repositories.ThirdPartyRepository;
 import bank.repositories.UserRepository;
-import bank.services.CheckingService;
+//import bank.services.CheckingService;
+import bank.services.AccountService;
 import bank.services.RoleService;
 import org.hibernate.Session;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -28,9 +30,11 @@ import static bank.enums.Status.ACTIVE;
 @Service
 public class Testing {
     @Autowired
-    private CheckingRepository checkingRepository;
-    @Autowired
-    private CheckingService checkingService;
+    //private CheckingRepository checkingRepository;
+    private AccountRepository accountRepository;
+    //@Autowired
+    //private CheckingService checkingService;
+    //private AccountService accountService;
     @Autowired
     //private AccountHolderRepository accountHolderRepository;
     private UserRepository userRepository;
@@ -65,7 +69,7 @@ public class Testing {
         tester.setPrimaryOwner(auxUser);
         tester.setSecretKey(passwordEncoder.encode("1234"));
         tester.setAccountStatus(ACTIVE);
-        checkingRepository.save(tester);
+        accountRepository.save(tester);
 
 
         AccountHolder auxUser2 = new AccountHolder();
@@ -86,13 +90,13 @@ public class Testing {
         tester3.setPrimaryOwner(auxUser3);
         tester3.setSecretKey(passwordEncoder.encode("4321"));
         tester3.setAccountStatus(ACTIVE);
-        checkingRepository.save(tester3);
+        accountRepository.save(tester3);
 
         Checking tester4 = new Checking();
         tester4.setBalance(BigDecimal.valueOf(1000));
         tester4.setSecretKey(passwordEncoder.encode("3232"));
         tester4.setAccountStatus(ACTIVE);
-        checkingRepository.save(tester4);
+        accountRepository.save(tester4);
         ThirdParty thirdPartyUser = new ThirdParty();
         thirdPartyUser.setUsername("ThirdPartyUser");
         thirdPartyUser.setPassword(passwordEncoder.encode("3333"));

@@ -4,10 +4,11 @@ import bank.models.accounts.Checking;
 import bank.models.Role;
 import bank.models.roles.AccountHolder;
 // import bank.repositories.AccountHolderRepository;
-import bank.repositories.CheckingRepository;
+// import bank.repositories.CheckingRepository;
+import bank.repositories.AccountRepository;
 import bank.repositories.RoleRepository;
 import bank.repositories.UserRepository;
-import bank.services.CheckingService;
+//import bank.services.CheckingService;
 import bank.services.RoleService;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import org.junit.jupiter.api.AfterEach;
@@ -37,9 +38,8 @@ public class ControllerTest {
     private WebApplicationContext webApplicationContext;
 
     @Autowired
-    private CheckingRepository checkingRepository;
-    @Autowired
-    private CheckingService checkingService;
+    //private CheckingRepository checkingRepository;
+    private AccountRepository accountRepository;
     @Autowired
     // private AccountHolderRepository accountHolderRepository;
     private UserRepository userRepository;
@@ -82,13 +82,13 @@ public class ControllerTest {
         testerC.setPrimaryOwner(auxUserC);
         testerC.setSecretKey(passwordEncoder.encode("1234"));
         testerC.setAccountStatus(ACTIVE);
-        checkingRepository.save(testerC);
-        checkerC = checkingRepository.findByPrimaryOwner(testerC.getPrimaryOwner()).get();
+        accountRepository.save(testerC);
+        checkerC = (Checking) accountRepository.findByPrimaryOwner(testerC.getPrimaryOwner()).get();
     }
 
     @AfterEach
     void tearDown() {
-        checkingRepository.deleteById(checkerC.getId());
+        accountRepository.deleteById(checkerC.getId());
         userRepository.deleteById(checkerC.getPrimaryOwner().getId());
         roleRepository.deleteById(checkerC.getPrimaryOwner().getRole().getId());
     }
