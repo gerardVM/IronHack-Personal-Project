@@ -70,7 +70,7 @@ Following requests can be made:
 {
 	"username"  : "userT",
 	"password"  : "passwordT",
-	"role"      : "ADMIN"
+	"role"      : "THIRD_PARTY"
 }
 ```
 
