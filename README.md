@@ -113,16 +113,16 @@ Following requests can be made:
 ```
 
 Conditions for a transaction to be successful:
-- Issuer needs to have enough balance
-- Amount on transaction cannot be negative 
-- Issuer username needs to belong to the Issuer Account
-- Receiver username needs to belong to the Receiver Account
-- Transaction needs to be signed with issuer password
-- Neither issuer nor receiver account can be FROZEN
+- Issuer needs to have enough balance.
+- Amount on transaction cannot be negative .
+- Issuer username needs to belong to the Issuer Account.
+- Receiver username needs to belong to the Receiver Account.
+- Transaction needs to be signed with issuer password.
+- Neither issuer nor receiver account can be FROZEN.
 - Identical transaction cannot be made in less than 1 minute.
-- Third party users can also send and receive transactions.
-- Making several transactions in less than 1 second freezes the account
-- Making 150% transactions of transactions over 24h average freezes the account
+- Third party users can also send and receive funds.
+- Making several transactions in less than 1 second freezes the account.
+- Making transactions over 150% of the number of transactions you have ever made in 24h freezes the account.
 
 ## Contributing
 
