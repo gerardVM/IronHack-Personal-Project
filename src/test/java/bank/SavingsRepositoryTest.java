@@ -1,11 +1,14 @@
 package bank;
 
+import bank.enums.Roles;
 import bank.models.Role;
 import bank.models.accounts.Savings;
 import bank.models.roles.AccountHolder;
-import bank.repositories.AccountHolderRepository;
+// import bank.repositories.AccountHolderRepository;
 import bank.repositories.RoleRepository;
 import bank.repositories.SavingsRepository;
+import bank.repositories.UserRepository;
+import bank.services.RoleService;
 import bank.services.SavingsService;
 import org.junit.jupiter.api.AfterEach;
 import org.junit.jupiter.api.BeforeEach;
@@ -18,8 +21,9 @@ import org.springframework.security.crypto.password.PasswordEncoder;
 import java.math.BigDecimal;
 import java.math.RoundingMode;
 import java.time.LocalDate;
+import java.util.List;
 
-import static bank.enums.Roles.ACCOUNT_HOLDER;
+import static bank.enums.Roles.*;
 import static bank.enums.Status.ACTIVE;
 import static org.junit.jupiter.api.Assertions.*;
 import static org.junit.jupiter.api.Assertions.assertThrows;
@@ -31,9 +35,12 @@ public class SavingsRepositoryTest {
     @Autowired
     private SavingsService savingsService;
     @Autowired
-    private AccountHolderRepository accountHolderRepository;
+    // private AccountHolderRepository accountHolderRepository;
+    private UserRepository userRepository;
     @Autowired
     private RoleRepository roleRepository;
+    @Autowired
+    private RoleService roleService;
 
     PasswordEncoder passwordEncoder = new BCryptPasswordEncoder();
     Savings tester;
@@ -43,15 +50,20 @@ public class SavingsRepositoryTest {
 
     @BeforeEach
     public void setUp() {
-        auxRole = new Role();
-        auxRole.setRole(ACCOUNT_HOLDER);
-        roleRepository.save(auxRole);
+        List<Roles> roles = List.of(ADMIN, ACCOUNT_HOLDER, THIRD_PARTY);
+        for (Roles role : roles) {
+            if (!roleService.findByRole(role).isPresent()) {
+                auxRole = new Role();
+                auxRole.setRole(role);
+                roleRepository.save(auxRole);
+            }
+        }
         auxUser = new AccountHolder();
         auxUser.setUsername("AuxUser");
         auxUser.setPassword(passwordEncoder.encode("password"));
-        auxUser.setRole(auxRole);
+        auxUser.setRole(roleService.findByRole(ACCOUNT_HOLDER).get());
         auxUser.setBirthDate(LocalDate.of(1990, 1, 1));
-        accountHolderRepository.save(auxUser);
+        userRepository.save(auxUser);
         tester = new Savings();
         tester.setBalance(BigDecimal.valueOf(1000));
         tester.setPrimaryOwner(auxUser);
@@ -67,7 +79,7 @@ public class SavingsRepositoryTest {
     @AfterEach
     public void tearDown() {
         savingsRepository.deleteAll();
-        accountHolderRepository.deleteAll();
+        userRepository.deleteAll();
         roleRepository.deleteAll();
     }
 
@@ -86,9 +98,9 @@ public class SavingsRepositoryTest {
     }
     @Test
     void deleteSavingsAccountTest(){
-        assertThrows(Exception.class, () -> { accountHolderRepository.deleteAll(); } );
+        assertThrows(Exception.class, () -> { userRepository.deleteAll(); } );
         assertDoesNotThrow(() -> { savingsRepository.deleteAll(); } );
-        assertDoesNotThrow(() -> { accountHolderRepository.deleteAll(); } );
+        assertDoesNotThrow(() -> { userRepository.deleteAll(); } );
         assertDoesNotThrow(() -> { roleRepository.deleteAll(); } );
     }
 

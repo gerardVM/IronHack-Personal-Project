@@ -38,7 +38,8 @@ public class NewAccountsTest {
     private StudentCheckingService studentCheckingService;
 
     @Autowired
-    private AccountHolderRepository accountHolderRepository;
+    //private AccountHolderRepository accountHolderRepository;
+    private UserRepository userRepository;
     @Autowired
     private RoleRepository roleRepository;
     @Autowired
@@ -67,7 +68,7 @@ public class NewAccountsTest {
         auxUser.setPassword(passwordEncoder.encode("password"));
         auxUser.setRole(roleService.findByRole(ACCOUNT_HOLDER).get());
         auxUser.setBirthDate(LocalDate.of(1990, 1, 1));
-        accountHolderRepository.save(auxUser);
+        userRepository.save(auxUser);
         tester = new Checking();
         tester.setBalance(BigDecimal.valueOf(250));
         tester.setPrimaryOwner(auxUser);
@@ -82,7 +83,7 @@ public class NewAccountsTest {
     void tearDown() {
         checkingRepository.deleteAll();
         studentCheckingRepository.deleteAll();
-        accountHolderRepository.deleteAll();
+        userRepository.deleteAll();
         roleRepository.deleteAll();
     }
 

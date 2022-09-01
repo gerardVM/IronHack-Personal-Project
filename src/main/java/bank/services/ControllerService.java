@@ -1,9 +1,11 @@
 package bank.services;
 
+import bank.models.User;
 import bank.models.accounts.Account;
 import bank.models.roles.AccountHolder;
-import bank.repositories.AccountHolderRepository;
+// import bank.repositories.AccountHolderRepository;
 import bank.repositories.AccountRepository;
+import bank.repositories.UserRepository;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
@@ -16,13 +18,15 @@ public class ControllerService {
 
     @Autowired
     AccountRepository accountRepository;
+
     @Autowired
-    AccountHolderRepository accountHolderRepository;
+    // AccountHolderRepository accountHolderRepository;
+    UserRepository userRepository;
 
     public List<String> findAllMyBalances(String username) {
-        AccountHolder accountHolder = accountHolderRepository.findByUsername(username).orElseThrow(
+        User user = userRepository.findByUsername(username).orElseThrow(
                 () -> new IllegalArgumentException("AccountHolder not found"));
-        List<String> balances = accountRepository.findAllByPrimaryOwner(accountHolder)
+        List<String> balances = accountRepository.findAllByPrimaryOwner((AccountHolder) user)
                                         .stream()
                                         .map(Account::getBalance)
                                         .map(BigDecimal::toString)

@@ -5,10 +5,11 @@ import bank.models.accounts.Checking;
 import bank.models.Role;
 import bank.models.roles.AccountHolder;
 import bank.models.roles.ThirdParty;
-import bank.repositories.AccountHolderRepository;
+// import bank.repositories.AccountHolderRepository;
 import bank.repositories.CheckingRepository;
 import bank.repositories.RoleRepository;
 import bank.repositories.ThirdPartyRepository;
+import bank.repositories.UserRepository;
 import bank.services.CheckingService;
 import bank.services.RoleService;
 import org.hibernate.Session;
@@ -31,7 +32,8 @@ public class Testing {
     @Autowired
     private CheckingService checkingService;
     @Autowired
-    private AccountHolderRepository accountHolderRepository;
+    //private AccountHolderRepository accountHolderRepository;
+    private UserRepository userRepository;
     @Autowired
     private RoleRepository roleRepository;
     @Autowired
@@ -57,7 +59,7 @@ public class Testing {
         auxUser.setPassword(passwordEncoder.encode("password"));
         auxUser.setRole(roleService.findByRole(ACCOUNT_HOLDER).get());
         auxUser.setBirthDate(LocalDate.of(1990, 1, 1));
-        accountHolderRepository.save(auxUser);
+        userRepository.save(auxUser);
         Checking tester = new Checking();
         tester.setBalance(BigDecimal.valueOf(250));
         tester.setPrimaryOwner(auxUser);
@@ -71,14 +73,14 @@ public class Testing {
         auxUser2.setPassword(passwordEncoder.encode("1234"));
         auxUser2.setRole(roleService.findByRole(ADMIN).get());
         auxUser2.setBirthDate(LocalDate.of(1991, 1, 1));
-        accountHolderRepository.save(auxUser2);
+        userRepository.save(auxUser2);
 
         AccountHolder auxUser3 = new AccountHolder();
         auxUser3.setUsername("AuxUser3");
         auxUser3.setPassword(passwordEncoder.encode("4321"));
         auxUser3.setRole(roleService.findByRole(ACCOUNT_HOLDER).get());
         auxUser3.setBirthDate(LocalDate.of(1992, 1, 1));
-        accountHolderRepository.save(auxUser3);
+        userRepository.save(auxUser3);
         Checking tester3 = new Checking();
         tester3.setBalance(BigDecimal.valueOf(500));
         tester3.setPrimaryOwner(auxUser3);

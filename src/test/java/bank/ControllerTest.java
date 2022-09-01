@@ -3,9 +3,10 @@ package bank;
 import bank.models.accounts.Checking;
 import bank.models.Role;
 import bank.models.roles.AccountHolder;
-import bank.repositories.AccountHolderRepository;
+// import bank.repositories.AccountHolderRepository;
 import bank.repositories.CheckingRepository;
 import bank.repositories.RoleRepository;
+import bank.repositories.UserRepository;
 import bank.services.CheckingService;
 import bank.services.RoleService;
 import com.fasterxml.jackson.databind.ObjectMapper;
@@ -40,7 +41,8 @@ public class ControllerTest {
     @Autowired
     private CheckingService checkingService;
     @Autowired
-    private AccountHolderRepository accountHolderRepository;
+    // private AccountHolderRepository accountHolderRepository;
+    private UserRepository userRepository;
     @Autowired
     private RoleRepository roleRepository;
 
@@ -74,7 +76,7 @@ public class ControllerTest {
         auxUserC.setPassword(passwordEncoder.encode("password"));
         auxUserC.setRole(auxRoleC);
         auxUserC.setBirthDate(LocalDate.of(1990, 1, 1));
-        accountHolderRepository.save(auxUserC);
+        userRepository.save(auxUserC);
         testerC = new Checking();
         testerC.setBalance(BigDecimal.valueOf(250));
         testerC.setPrimaryOwner(auxUserC);
@@ -87,7 +89,7 @@ public class ControllerTest {
     @AfterEach
     void tearDown() {
         checkingRepository.deleteById(checkerC.getId());
-        accountHolderRepository.deleteById(checkerC.getPrimaryOwner().getId());
+        userRepository.deleteById(checkerC.getPrimaryOwner().getId());
         roleRepository.deleteById(checkerC.getPrimaryOwner().getRole().getId());
     }
 

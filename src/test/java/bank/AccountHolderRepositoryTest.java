@@ -2,10 +2,12 @@ package bank;
 
 import bank.auxiliar.Address;
 import bank.models.Role;
+import bank.models.User;
 import bank.models.roles.AccountHolder;
-import bank.repositories.AccountHolderRepository;
+// import bank.repositories.AccountHolderRepository;
 import bank.repositories.RoleRepository;
-import bank.services.AccountHolderService;
+import bank.repositories.UserRepository;
+import bank.services.UserService;
 import org.junit.jupiter.api.AfterEach;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
@@ -23,9 +25,10 @@ import static org.junit.jupiter.api.Assertions.*;
 public class AccountHolderRepositoryTest {
 
     @Autowired
-    private AccountHolderRepository accountHolderRepository;
+    // private AccountHolderRepository accountHolderRepository;
+    private UserRepository userRepository;
     @Autowired
-    private AccountHolderService accountHolderService;
+    private UserService userService;
 
     @Autowired
     private RoleRepository roleRepository;
@@ -50,13 +53,13 @@ public class AccountHolderRepositoryTest {
         tester.setPrimaryAddress(auxAddress);
         tester.setMailingAddress("Test Address 2");
         tester.setRole(auxRole);
-        accountHolderRepository.save(tester);
-        checker = accountHolderService.findByUsername(tester.getUsername()).get();
+        userRepository.save(tester);
+        checker = (AccountHolder) userService.findByUsername(tester.getUsername()).get();
     }
 
     @AfterEach
     void tearDown() {
-        accountHolderRepository.deleteAll();
+        userRepository.deleteAll();
         roleRepository.deleteAll();
     }
 
@@ -74,7 +77,7 @@ public class AccountHolderRepositoryTest {
     @Test
     void deleteAccountHolderTest(){
         assertThrows(Exception.class, () -> { roleRepository.deleteAll(); } );
-        assertDoesNotThrow(() -> { accountHolderRepository.deleteAll(); } );
+        assertDoesNotThrow(() -> { userRepository.deleteAll(); } );
         assertDoesNotThrow(() -> { roleRepository.deleteAll(); } );
     }
 }

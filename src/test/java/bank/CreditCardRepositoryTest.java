@@ -1,12 +1,15 @@
 package bank;
 
+import bank.enums.Roles;
 import bank.models.accounts.CreditCard;
 import bank.models.Role;
 import bank.models.roles.AccountHolder;
-import bank.repositories.AccountHolderRepository;
+// import bank.repositories.AccountHolderRepository;
 import bank.repositories.CreditCardRepository;
 import bank.repositories.RoleRepository;
+import bank.repositories.UserRepository;
 import bank.services.CreditCardService;
+import bank.services.RoleService;
 import org.junit.jupiter.api.AfterEach;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
@@ -18,8 +21,9 @@ import org.springframework.security.crypto.password.PasswordEncoder;
 import java.math.BigDecimal;
 import java.math.RoundingMode;
 import java.time.LocalDate;
+import java.util.List;
 
-import static bank.enums.Roles.ACCOUNT_HOLDER;
+import static bank.enums.Roles.*;
 import static org.junit.jupiter.api.Assertions.*;
 
 @SpringBootTest
@@ -30,9 +34,12 @@ public class CreditCardRepositoryTest {
     @Autowired
     private CreditCardService creditCardService;
     @Autowired
-    private AccountHolderRepository accountHolderRepository;
+    // private AccountHolderRepository accountHolderRepository;
+    private UserRepository userRepository;
     @Autowired
     private RoleRepository roleRepository;
+    @Autowired
+    private RoleService roleService;
 
     PasswordEncoder passwordEncoder = new BCryptPasswordEncoder();
     CreditCard tester;
@@ -42,18 +49,24 @@ public class CreditCardRepositoryTest {
 
     @BeforeEach
     public void setUp() {
-        auxRole = new Role();
-        auxRole.setRole(ACCOUNT_HOLDER);
-        roleRepository.save(auxRole);
+        List<Roles> roles = List.of(ADMIN, ACCOUNT_HOLDER, THIRD_PARTY);
+        for (Roles role : roles) {
+            if (!roleService.findByRole(role).isPresent()) {
+                auxRole = new Role();
+                auxRole.setRole(role);
+                roleRepository.save(auxRole);
+            }
+        }
         auxUser = new AccountHolder();
         auxUser.setUsername("AuxUser");
         auxUser.setPassword(passwordEncoder.encode("password"));
-        auxUser.setRole(auxRole);
+        auxUser.setRole(roleService.findByRole(ACCOUNT_HOLDER).get());
         auxUser.setBirthDate(LocalDate.of(1990, 1, 1));
-        accountHolderRepository.save(auxUser);
+        userRepository.save(auxUser);
         tester = new CreditCard();
         tester.setBalance(BigDecimal.valueOf(100));
         tester.setPrimaryOwner(auxUser);
+        tester.setSecretKey(passwordEncoder.encode("1234"));
         // creditLimit has a set value of 100, so it is not necessary to set it here
         // interestRate has a set value of 0.2, so it is not necessary to set it here
         creditCardRepository.save(tester);
@@ -63,7 +76,7 @@ public class CreditCardRepositoryTest {
     @AfterEach
     public void tearDown() {
         creditCardRepository.deleteAll();
-        accountHolderRepository.deleteAll();
+        userRepository.deleteAll();
         roleRepository.deleteAll();
     }
 
@@ -81,10 +94,10 @@ public class CreditCardRepositoryTest {
 
     @Test
     void deleteSavingsAccountTest(){
-        assertThrows(Exception.class, () -> { accountHolderRepository.deleteAll(); } );
-        assertDoesNotThrow(() -> { creditCardRepository.deleteAll();       } );
-        assertDoesNotThrow(() -> { accountHolderRepository.deleteAll(); } );
-        assertDoesNotThrow(() -> { roleRepository.deleteAll();          } );
+        assertThrows(Exception.class, () -> { userRepository.deleteAll(); } );
+        assertDoesNotThrow(() -> { creditCardRepository.deleteAll(); } );
+        assertDoesNotThrow(() -> { userRepository.deleteAll(); } );
+        assertDoesNotThrow(() -> { roleRepository.deleteAll(); } );
     }
 
     @Test

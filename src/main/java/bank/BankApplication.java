@@ -17,6 +17,6 @@ public class BankApplication implements CommandLineRunner {
 
 	@Override
 	public void run(String... args) throws Exception {
-		testing.addExampleData();
+		//testing.addExampleData();
 	}
 }

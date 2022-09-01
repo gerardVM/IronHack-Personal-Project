@@ -2,9 +2,11 @@ package bank;
 
 import bank.models.Role;
 import bank.models.roles.Admin;
-import bank.repositories.AdminRepository;
+//import bank.repositories.AdminRepository;
 import bank.repositories.RoleRepository;
-import bank.services.AdminService;
+//import bank.services.AdminService;
+import bank.repositories.UserRepository;
+import bank.services.UserService;
 import org.junit.jupiter.api.AfterEach;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
@@ -21,10 +23,12 @@ import static org.junit.jupiter.api.Assertions.assertEquals;
 public class AdminRepositoryTest {
 
     @Autowired
-    private AdminRepository adminRepository;
+    // private AdminRepository adminRepository;
+    private UserRepository userRepository;
 
     @Autowired
-    private AdminService adminService;
+    // private AdminService adminService;
+    private UserService userService;
 
     @Autowired
     private RoleRepository roleRepository;
@@ -43,13 +47,13 @@ public class AdminRepositoryTest {
         testerA.setUsername("TesterA");
         testerA.setPassword(passwordEncoder.encode("adminpassword"));
         testerA.setRole(auxRoleA);
-        adminRepository.save(testerA);
-        checkerA = adminService.findByUsername(testerA.getUsername()).get();
+        userRepository.save(testerA);
+        checkerA = (Admin) userService.findByUsername(testerA.getUsername()).get();
     }
 
     @AfterEach
     public void tearDown() {
-        adminRepository.deleteAll();
+        userRepository.deleteAll();
         roleRepository.deleteAll();
     }
 
@@ -64,7 +68,7 @@ public class AdminRepositoryTest {
     @Test
     void deleteAdminTest(){
         assertThrows(Exception.class, () -> { roleRepository.deleteAll(); } );
-        assertDoesNotThrow(() -> { adminRepository.deleteAll(); } );
+        assertDoesNotThrow(() -> { userRepository.deleteAll(); } );
         assertDoesNotThrow(() -> { roleRepository.deleteAll(); } );
     }
 }
