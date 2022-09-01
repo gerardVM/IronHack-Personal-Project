@@ -59,7 +59,7 @@ public class UserController {
         userRepository.save(accountHolder);
     }
 
-    @PostMapping("create-admin")
+    @PostMapping("/create-admin")
     @ResponseStatus(HttpStatus.CREATED)
     public void createAdmin(@RequestBody Admin admin) {
         admin.setPassword(passwordEncoder.encode(admin.getPassword()));

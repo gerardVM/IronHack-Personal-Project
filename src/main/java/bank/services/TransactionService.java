@@ -79,7 +79,7 @@ public class TransactionService {
                                                                 () -> new IllegalArgumentException("FromAccount not found")
                                                                 ).getBalance();
         boolean positiveBalance = transaction.getAmount().compareTo(BigDecimal.ZERO) > 0;
-        if (!positiveBalance) { throw new Exception("Balance needs to be positive"); }
+        if (!positiveBalance) { throw new Exception("Amount needs to be positive"); }
         return availableAmount.compareTo(transaction.getAmount()) >= 0;
     }
 
@@ -222,6 +222,10 @@ public class TransactionService {
         );
         for (Transaction t : findByFromAccountId(fromAccount.getId())){
             if (((double) lastTransactions(transaction)) > lastTransactions(t)*1.5) {
+                if (fromAccount instanceof Checking) { ((Checking) fromAccount).setAccountStatus(FROZEN); }
+                else if (fromAccount instanceof Savings) { ((Savings) fromAccount).setAccountStatus(FROZEN); }
+                else if (fromAccount instanceof StudentChecking) { ((StudentChecking) fromAccount).setAccountStatus(FROZEN); }
+                accountRepository.save(fromAccount);
                 throw new IllegalArgumentException("Average fraud detected. From Account is now FROZEN");
             }
         }
