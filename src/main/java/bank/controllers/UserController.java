@@ -93,6 +93,18 @@ public class UserController {
         return controllerService.modifyBalance(id, amount);
     }
 
+    @PutMapping("/activate")
+    @ResponseStatus(HttpStatus.ACCEPTED)
+    public String activate(@RequestParam Long id) {
+        return controllerService.activate(id);
+    }
+
+    @PutMapping("/freeze")
+    @ResponseStatus(HttpStatus.ACCEPTED)
+    public String freeze(@RequestParam Long id) {
+        return controllerService.freeze(id);
+    }
+
     @GetMapping("/balance/{accountId}")
     @ResponseStatus(value = HttpStatus.OK)
     public String findMyBalances(@PathVariable Long accountId, @AuthenticationPrincipal UserDetails userDetails) {

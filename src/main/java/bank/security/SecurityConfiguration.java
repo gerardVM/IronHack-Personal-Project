@@ -44,6 +44,8 @@ public class SecurityConfiguration  {
                 .mvcMatchers(HttpMethod.PATCH, "/modify-balance").hasRole("ADMIN")
                 .mvcMatchers(HttpMethod.GET, "/balance").hasAnyRole( "ADMIN")
                 .mvcMatchers(HttpMethod.GET, "/balance/{username}").hasRole("ACCOUNT_HOLDER")
+                .mvcMatchers(HttpMethod.PUT, "/activate").hasRole("ADMIN")
+                .mvcMatchers(HttpMethod.PUT, "/freeze").hasRole("ADMIN")
                 .anyRequest().permitAll();
 
         httpSecurity.csrf().disable();

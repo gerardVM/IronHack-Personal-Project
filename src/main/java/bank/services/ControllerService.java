@@ -3,8 +3,7 @@ package bank.services;
 import bank.models.Transactions.RegularTransaction;
 import bank.models.Transactions.Transaction;
 import bank.models.User;
-import bank.models.accounts.Account;
-import bank.models.accounts.Checking;
+import bank.models.accounts.*;
 import bank.models.roles.AccountHolder;
 import bank.repositories.AccountRepository;
 import bank.repositories.UserRepository;
@@ -18,8 +17,7 @@ import java.math.BigDecimal;
 import java.time.LocalDate;
 import java.util.List;
 
-import static bank.enums.Status.ACTIVE;
-import static bank.enums.Status.INTERNAL;
+import static bank.enums.Status.*;
 
 @Service
 public class ControllerService {
@@ -90,5 +88,28 @@ public class ControllerService {
         return "Balance of account " + account.getId() + " is now: " + account.getBalance() + '\n' +
                 "Auto-generated transaction id is: " + transaction.getId() + '\n' +
                 "Auto-generated account id is: " + virtualChecking.getId();
+    }
+
+    public String activate(Long id) {
+        Account account = accountRepository.findById(id).orElseThrow(
+                () -> new IllegalArgumentException("Account not found")
+        );
+        if (account instanceof Checking) {
+            ((Checking) account).setAccountStatus(ACTIVE);}
+        else if (account instanceof Savings) { ((Savings) account).setAccountStatus(ACTIVE); }
+        else if (account instanceof StudentChecking) { ((StudentChecking) account).setAccountStatus(ACTIVE); }
+        accountRepository.save(account);
+        return "Account " + account.getId() + " is now active";
+    }
+
+    public String freeze(Long id) {
+        Account account = accountRepository.findById(id).orElseThrow(
+                () -> new IllegalArgumentException("Account not found")
+        );
+        if (account instanceof Checking) { ((Checking) account).setAccountStatus(FROZEN); }
+        else if (account instanceof Savings) { ((Savings) account).setAccountStatus(FROZEN); }
+        else if (account instanceof StudentChecking) { ((StudentChecking) account).setAccountStatus(FROZEN); }
+        accountRepository.save(account);
+        return "Account " + account.getId() + " is now frozen";
     }
 }

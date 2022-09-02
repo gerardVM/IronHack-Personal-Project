@@ -7,6 +7,8 @@ This Bank System allows us to make requests in order to:
 - Create new users if you are an admin.
 - Create new accounts if you are an admin.
 - Modify balance of any account if you are an admin.
+- Activate accounts if you are an admin
+- Freeze accounts if you are an admin
 - Check balance of your account (You need authentication)
 - Send funds to account of this bank or to other third parties
 - Receive funds
@@ -24,9 +26,13 @@ Class Diagram
 
 ## How to try it
 
+Check below the options that are given to you in order to try the Bank System.
+
+This project is deployed automatically to a Kubernetes Cluster in Digital Ocean. You can check it out in the following link: (Ask the owner for the link)
 
 ## Requirements
 
+You need to have installed IntelliJ and MySQL if you want to try it locally.
 
 ## Usage
 
@@ -81,6 +87,14 @@ Following requests can be made:
 (PATCH) http://socket/modify-balance: To modifiy an account balance (Just Admins)
 	
 	http://socket/modify-balance/?id=1&amount=200
+
+(PUT) http://socket/activate: To activate an account (Just Admins)
+
+	http://socket/activate?id=2
+
+(PUT) http://socket/freeze: To freeze an account (Just Admins)
+
+	http://socket/freeze?id=2
 
 (GET)   http://socket/balance/{accountId}: To check your own balance (You need to be authenticated)
 	
