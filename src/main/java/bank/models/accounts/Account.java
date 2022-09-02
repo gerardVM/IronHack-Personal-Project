@@ -4,6 +4,7 @@ import bank.models.User;
 import bank.models.roles.AccountHolder;
 
 import bank.models.roles.ThirdParty;
+import com.fasterxml.jackson.annotation.JsonIgnore;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;

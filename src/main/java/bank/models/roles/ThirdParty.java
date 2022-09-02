@@ -3,6 +3,7 @@ package bank.models.roles;
 import bank.models.Role;
 import bank.models.User;
 import bank.models.accounts.Account;
+import com.fasterxml.jackson.annotation.JsonIgnore;
 import lombok.AllArgsConstructor;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
@@ -19,6 +20,7 @@ import java.util.HashMap;
 public class ThirdParty extends User {
     @OneToOne
     @JoinColumn(name = "account_id")
+    @JsonIgnore
     private Account account;
 }
 

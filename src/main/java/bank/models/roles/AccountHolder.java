@@ -3,6 +3,7 @@ package bank.models.roles;
 import bank.auxiliar.Address;
 import bank.models.accounts.Account;
 import bank.models.User;
+import com.fasterxml.jackson.annotation.JsonIgnore;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
@@ -24,7 +25,9 @@ public class AccountHolder extends User {
     private Address primaryAddress;
     private String mailingAddress;
     @OneToMany(mappedBy = "primaryOwner", fetch = FetchType.LAZY)
+    @JsonIgnore
     private Set<Account> primary = new HashSet<>();
     @OneToMany(mappedBy = "secondaryOwner", fetch = FetchType.LAZY)
+    @JsonIgnore
     private Set<Account> secondary = new HashSet<>();
 }

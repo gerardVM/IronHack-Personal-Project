@@ -50,9 +50,13 @@ Checking and Savings Account need to have a minimum amount of balance. When goin
 
 Following requests can be made:
 
-(GET)   http://socket/hello-world: To check communication
+(GET)   socket/hello-world: To check communication.
 
-(POST)  http://socket/create-account-holder: To create a new Account Holder (Just Admins)
+(GET)   socket/show-accounts: To see all accounts.
+
+(GET)   socket/show-users: To see all users.
+
+(POST)  socket/create-account-holder: To create a new Account Holder. (Just Admins)
 ```json
 {
 	"username"  : "userH",
@@ -62,7 +66,7 @@ Following requests can be made:
 }
 ```
 
-(POST)  http://socket/create-admin: To create a new Admin (Just Admins)
+(POST)  socket/create-admin: To create a new Admin. (Just Admins)
 ```json
 {
 	"username"  : "userA",
@@ -71,7 +75,7 @@ Following requests can be made:
 }
 ```
 
-(POST)  http://socket/create-third-party: To create a new Third Party user (Just Admins)
+(POST)  socket/create-third-party: To create a new Third Party user. (Just Admins)
 ```json
 {
 	"username"  : "userT",
@@ -80,27 +84,27 @@ Following requests can be made:
 }
 ```
 
-(GET)   http://socket/balance: To check an account balance (Just Admins)
+(GET)   socket/balance: To check an account balance. (Just Admins)
 	
-	http://socket/balance?id=1
+	socket/balance?id=1
 
-(PATCH) http://socket/modify-balance: To modifiy an account balance (Just Admins)
+(PATCH) socket/modify-balance: To modifiy an account balance. (Just Admins)
 	
-	http://socket/modify-balance/?id=1&amount=200
+	socket/modify-balance/?id=1&amount=200
 
-(PUT) http://socket/activate: To activate an account (Just Admins)
+(PUT) socket/activate: To activate an account. (Just Admins)
 
-	http://socket/activate?id=2
+	socket/activate?id=2
 
-(PUT) http://socket/freeze: To freeze an account (Just Admins)
+(PUT) socket/freeze: To freeze an account. (Just Admins)
 
-	http://socket/freeze?id=2
+	socket/freeze?id=2
 
-(GET)   http://socket/balance/{accountId}: To check your own balance (You need to be authenticated)
+(GET)   socket/balance/{accountId}: To check your own balance. (You need to be authenticated)
 	
-	http://socket/balance/{accountId}
+	socket/balance/{accountId}
 
-(POST)  http://socket/new-transaction: To make a new transaction
+(POST)  socket/new-transaction: To make a new transaction.
 ```json
 {
 	"amount": 15,
@@ -113,7 +117,7 @@ Following requests can be made:
 }
 ```
 
-(POST)  http://socket/new-transaction: To make a new transaction in case you are a Third party
+(POST)  socket/new-transaction: To make a new transaction in case you are a Third party.
 ```json
 {
 	"amount": 15,

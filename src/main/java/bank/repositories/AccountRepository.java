@@ -1,5 +1,6 @@
 package bank.repositories;
 
+import bank.enums.Status;
 import bank.models.User;
 import bank.models.accounts.Account;
 import bank.models.roles.AccountHolder;
@@ -15,6 +16,7 @@ public interface AccountRepository extends JpaRepository<Account, Long> {
     List<Account> findAllBySecondaryOwner(User user);
     Optional<Account> findByPrimaryOwner(User user);
     Optional<Account> findBySecretKey(String hashedSecretKey);
+
 }
 
 

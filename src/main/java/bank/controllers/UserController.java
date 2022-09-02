@@ -1,15 +1,19 @@
 package bank.controllers;
 
+import bank.enums.Status;
 import bank.models.Role;
 import bank.models.Transactions.RegularTransaction;
 import bank.models.Transactions.ThirdPartyTransaction;
 import bank.models.Transactions.Transaction;
+import bank.models.User;
+import bank.models.accounts.Account;
 import bank.models.roles.AccountHolder;
 import bank.models.roles.Admin;
 import bank.models.roles.ThirdParty;
 import bank.repositories.AccountRepository;
 import bank.repositories.RoleRepository;
 import bank.repositories.UserRepository;
+import bank.services.AccountService;
 import bank.services.ControllerService;
 import bank.services.TransactionService;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -21,6 +25,7 @@ import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.web.bind.annotation.*;
 
 import java.math.BigDecimal;
+import java.util.List;
 
 import static bank.enums.Roles.*;
 
@@ -33,6 +38,8 @@ public class UserController {
 
     @Autowired
     AccountRepository accountRepository;
+    @Autowired
+    AccountService accountService;
 
     @Autowired
     ControllerService controllerService;
@@ -85,6 +92,18 @@ public class UserController {
     @ResponseStatus(value = HttpStatus.OK)
     public String balance(@RequestParam Long id) {
         return "Balance of account " + id + " is: " + accountRepository.findById(id).get().getBalance();
+    }
+
+    @GetMapping("/show-accounts")
+    @ResponseStatus(value = HttpStatus.ACCEPTED)
+    public List<Account> showAccounts() {
+        return accountRepository.findAll();
+    }
+
+    @GetMapping("/show-users")
+    @ResponseStatus(value = HttpStatus.ACCEPTED)
+    public List<User> showUsers() {
+        return userRepository.findAll();
     }
 
     @PatchMapping("/modify-balance")
