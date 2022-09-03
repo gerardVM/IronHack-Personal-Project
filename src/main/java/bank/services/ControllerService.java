@@ -94,10 +94,7 @@ public class ControllerService {
         Account account = accountRepository.findById(id).orElseThrow(
                 () -> new IllegalArgumentException("Account not found")
         );
-        if (account instanceof Checking) {
-            ((Checking) account).setAccountStatus(ACTIVE);}
-        else if (account instanceof Savings) { ((Savings) account).setAccountStatus(ACTIVE); }
-        else if (account instanceof StudentChecking) { ((StudentChecking) account).setAccountStatus(ACTIVE); }
+        accountService.setAccountStatus(account, ACTIVE);
         accountRepository.save(account);
         return "Account " + account.getId() + " is now active";
     }
@@ -106,9 +103,7 @@ public class ControllerService {
         Account account = accountRepository.findById(id).orElseThrow(
                 () -> new IllegalArgumentException("Account not found")
         );
-        if (account instanceof Checking) { ((Checking) account).setAccountStatus(FROZEN); }
-        else if (account instanceof Savings) { ((Savings) account).setAccountStatus(FROZEN); }
-        else if (account instanceof StudentChecking) { ((StudentChecking) account).setAccountStatus(FROZEN); }
+        accountService.setAccountStatus(account, FROZEN);
         accountRepository.save(account);
         return "Account " + account.getId() + " is now frozen";
     }

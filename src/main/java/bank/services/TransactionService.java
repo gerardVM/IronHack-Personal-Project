@@ -1,5 +1,6 @@
 package bank.services;
 
+import bank.enums.Status;
 import bank.models.Transactions.RegularTransaction;
 import bank.models.Transactions.ThirdPartyTransaction;
 import bank.models.accounts.Account;
@@ -29,6 +30,8 @@ public class TransactionService {
     @Autowired
     AccountRepository accountRepository;
     @Autowired
+    AccountService accountService;
+    @Autowired
     UserRepository userRepository;
     @Autowired
     UserService userService;
@@ -52,11 +55,11 @@ public class TransactionService {
         boolean isValidUsername = isValidUsername(transaction);
         boolean isValidIssuer = isValidIssuer(transaction);
         boolean isValidSignature = isValidSignature(transaction);
-        boolean isAnyFrozen = isAnyFrozen(transaction);
+        isAnyFrozen(transaction);
         volumeFraudDetection(transaction);
         replicationDetection(transaction);
         averageFraudDetection(transaction);
-        if ( isValidBalance && isValidUsername && isValidIssuer && isValidSignature && !isAnyFrozen) {
+        if ( isValidBalance && isValidUsername && isValidIssuer && isValidSignature) {
             // Keys needs to be removed from the transaction object before saving it to the database
             if (transaction instanceof RegularTransaction) {
                 ((RegularTransaction) transaction).setSignature("ACCEPTED");
@@ -133,56 +136,20 @@ public class TransactionService {
         }
     }
 
-    public boolean isAnyFrozen(Transaction transaction){
+    public void isAnyFrozen(Transaction transaction){
         Account fromAccount = accountRepository.findById(transaction.getFromAccountId()).orElseThrow(
                 () -> new IllegalArgumentException("FromAccount not found")
         );
         Account toAccount = accountRepository.findById(transaction.getToAccountId()).orElseThrow(
                 () -> new IllegalArgumentException("ToAccount not found")
         );
-        boolean isAnyFrozen = false;
-        if (fromAccount instanceof Checking){
-            switch (((Checking) fromAccount).getAccountStatus()){
-                case FROZEN:
-                    isAnyFrozen = true;
-                    break;
-            }
-        } else if (fromAccount instanceof Savings){
-            switch (((Savings) fromAccount).getAccountStatus()){
-                case FROZEN:
-                    isAnyFrozen = true;
-                    break;
-            }
-        } else if (fromAccount instanceof StudentChecking){
-            switch (((StudentChecking) fromAccount).getAccountStatus()){
-                case FROZEN:
-                    isAnyFrozen = true;
-                    break;
-            }
+        if (accountService.getAccountStatus(fromAccount).equals(FROZEN)) {
+            throw new IllegalArgumentException("FromAccount is frozen");
         }
-        if (isAnyFrozen) { throw new IllegalArgumentException("Account FROM is frozen"); }
+        if (accountService.getAccountStatus(toAccount).equals(FROZEN)) {
+            throw new IllegalArgumentException("ToAccount is frozen");
+        }
 
-        if (toAccount instanceof Checking){
-            switch (((Checking) toAccount).getAccountStatus()){
-                case FROZEN:
-                    isAnyFrozen = true;
-                    break;
-            }
-        } else if (toAccount instanceof Savings){
-            switch (((Savings) toAccount).getAccountStatus()){
-                case FROZEN:
-                    isAnyFrozen = true;
-                    break;
-            }
-        } else if (toAccount instanceof StudentChecking){
-            switch (((StudentChecking) toAccount).getAccountStatus()){
-                case FROZEN:
-                    isAnyFrozen = true;
-                    break;
-            }
-        }
-        if (isAnyFrozen) { throw new IllegalArgumentException("Account TO is frozen"); }
-        return isAnyFrozen;
     }
 
     public void volumeFraudDetection(Transaction transaction){
@@ -193,14 +160,13 @@ public class TransactionService {
         List<Transaction> transactionList = findByFromAccountId(fromAccount.getId());
         for (Transaction t : transactionList){
             if (t.getTimestamp().isAfter(transaction.getTimestamp().minusSeconds(1))){
-                if (fromAccount instanceof Checking) { ((Checking) fromAccount).setAccountStatus(FROZEN); }
-                else if (fromAccount instanceof Savings) { ((Savings) fromAccount).setAccountStatus(FROZEN); }
-                else if (fromAccount instanceof StudentChecking) { ((StudentChecking) fromAccount).setAccountStatus(FROZEN); }
+                accountService.setAccountStatus(fromAccount, FROZEN);
                 accountRepository.save(fromAccount);
                 throw new IllegalArgumentException("Volume fraud detected. From Account is now FROZEN");
             }
         }
     }
+
     public void replicationDetection(Transaction transaction) {
         Account fromAccount = accountRepository.findById(transaction.getFromAccountId()).orElseThrow(
                 () -> new IllegalArgumentException("FromAccount not found")
@@ -222,9 +188,7 @@ public class TransactionService {
         );
         for (Transaction t : findByFromAccountId(fromAccount.getId())){
             if (((double) lastTransactions(transaction)) > lastTransactions(t)*1.5) {
-                if (fromAccount instanceof Checking) { ((Checking) fromAccount).setAccountStatus(FROZEN); }
-                else if (fromAccount instanceof Savings) { ((Savings) fromAccount).setAccountStatus(FROZEN); }
-                else if (fromAccount instanceof StudentChecking) { ((StudentChecking) fromAccount).setAccountStatus(FROZEN); }
+                accountService.setAccountStatus(fromAccount, FROZEN);
                 accountRepository.save(fromAccount);
                 throw new IllegalArgumentException("Average fraud detected. From Account is now FROZEN");
             }
