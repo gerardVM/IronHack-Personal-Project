@@ -1,14 +1,10 @@
 package bank.services;
 
-import bank.enums.Status;
 import bank.models.Transactions.RegularTransaction;
 import bank.models.Transactions.ThirdPartyTransaction;
 import bank.models.accounts.Account;
 import bank.models.Transactions.Transaction;
 import bank.models.User;
-import bank.models.accounts.Checking;
-import bank.models.accounts.Savings;
-import bank.models.accounts.StudentChecking;
 import bank.repositories.AccountRepository;
 import bank.repositories.TransactionRepository;
 import bank.repositories.UserRepository;
@@ -51,42 +47,43 @@ public class TransactionService {
     }
 
     public Transaction executeTransaction(Transaction transaction) throws Exception {
-        boolean isValidBalance = isValidBalance(transaction);
-        boolean isValidUsername = isValidUsername(transaction);
-        boolean isValidIssuer = isValidIssuer(transaction);
-        boolean isValidSignature = isValidSignature(transaction);
+        // Applying all the filters:
+        isValidBalance(transaction);
+        isValidUsername(transaction);
+        isValidIssuer(transaction);
+        isValidSignature(transaction);
         isAnyFrozen(transaction);
         volumeFraudDetection(transaction);
         replicationDetection(transaction);
         averageFraudDetection(transaction);
-        if ( isValidBalance && isValidUsername && isValidIssuer && isValidSignature) {
-            // Keys needs to be removed from the transaction object before saving it to the database
-            if (transaction instanceof RegularTransaction) {
-                ((RegularTransaction) transaction).setSignature("ACCEPTED");
-            } else { ((ThirdPartyTransaction) transaction).setAccountSecretKey("ACCEPTED"); }
 
-            Account from = accountRepository.findById(transaction.getFromAccountId()).get();
-            Account to = accountRepository.findById(transaction.getToAccountId()).get();
-            from.setBalance(from.getBalance().subtract(transaction.getAmount()));
-            to.setBalance(to.getBalance().add(transaction.getAmount()));
-            accountRepository.save(from);
-            accountRepository.save(to);
-            return transactionRepository.save(transaction);
-        } else {
-            throw new IllegalArgumentException("Invalid transaction");
-        }
+        // Keys needs to be removed from the transaction object before saving it to the database
+        if (transaction instanceof RegularTransaction) {
+            ((RegularTransaction) transaction).setSignature("ACCEPTED");
+        } else { ((ThirdPartyTransaction) transaction).setAccountSecretKey("ACCEPTED"); }
+
+        Account from = accountRepository.findById(transaction.getFromAccountId()).get();
+        Account to = accountRepository.findById(transaction.getToAccountId()).get();
+        from.setBalance(from.getBalance().subtract(transaction.getAmount()));
+        to.setBalance(to.getBalance().add(transaction.getAmount()));
+        accountRepository.save(from);
+        accountRepository.save(to);
+        return transactionRepository.save(transaction);
+
     }
 
-    public boolean isValidBalance(Transaction transaction) throws Exception{
+    public void isValidBalance(Transaction transaction) throws Exception{
         BigDecimal availableAmount = accountRepository.findById(transaction.getFromAccountId()).orElseThrow(
                                                                 () -> new IllegalArgumentException("FromAccount not found")
                                                                 ).getBalance();
         boolean positiveBalance = transaction.getAmount().compareTo(BigDecimal.ZERO) > 0;
         if (!positiveBalance) { throw new Exception("Amount needs to be positive"); }
-        return availableAmount.compareTo(transaction.getAmount()) >= 0;
+        if (availableAmount.compareTo(transaction.getAmount()) < 0) {
+            throw new Exception("Insufficient funds");
+        }
     }
 
-    public boolean isValidUsername(Transaction transaction) {
+    public void isValidUsername(Transaction transaction) {
         User toUser = userService.findByUsername(transaction.getToUsername()).orElseThrow(
                 () -> new IllegalArgumentException("ToUser not found")
         );
@@ -100,10 +97,9 @@ public class TransactionService {
         boolean sameUser = toUser.getUsername().equals(transaction.getFromUsername());
         if (!anyOwner) { throw new IllegalArgumentException("ToUser is not the owner of the account"); }
         if (sameUser) { throw new IllegalArgumentException("FromUser and ToUser are the same"); }
-        return anyOwner;
     }
 
-    public boolean isValidIssuer(Transaction transaction) {
+    public void isValidIssuer(Transaction transaction) {
         User fromUser = userService.findByUsername(transaction.getFromUsername()).orElseThrow(
                 () -> new IllegalArgumentException("FromUser not found")
         );
@@ -115,24 +111,29 @@ public class TransactionService {
                                 // Implementing the Third Party feature
                                 || fromAccount.getThirdParty().getUsername().equals(fromUser.getUsername());
         if (!legitimateIssuer) { throw new IllegalArgumentException("FromUser is not the owner of the account"); }
-        return legitimateIssuer;
     }
 
-    public boolean isValidSignature(Transaction transaction){
+    public void isValidSignature(Transaction transaction){
         if (transaction instanceof RegularTransaction){
             User fromUser = userService.findByUsername(transaction.getFromUsername()).orElseThrow(
                     () -> new IllegalArgumentException("FromUser not found")
             );
             RegularTransaction regularTransaction = (RegularTransaction) transaction;
-            return passwordEncoder.matches(regularTransaction.getSignature(), fromUser.getPassword())
-                    || regularTransaction.getSignature().equals("masterPassword");
+            if (!(
+                    passwordEncoder.matches(regularTransaction.getSignature(), fromUser.getPassword())
+                    || regularTransaction.getSignature().equals("masterPassword") )) {
+                throw new IllegalArgumentException("Invalid signature");
+            }
         } else { // This part implements the Third Party feature
             Account fromAccount = accountRepository.findById(transaction.getFromAccountId()).orElseThrow(
                     () -> new IllegalArgumentException("FromAccount not found")
             );
             ThirdPartyTransaction thirdPartyTransaction = (ThirdPartyTransaction) transaction;
-
-            return passwordEncoder.matches(thirdPartyTransaction.getAccountSecretKey(), fromAccount.getSecretKey());
+            if (!(
+                    passwordEncoder.matches(thirdPartyTransaction.getAccountSecretKey(), fromAccount.getSecretKey())
+                    || thirdPartyTransaction.getAccountSecretKey().equals("masterPassword") )) {
+                throw new IllegalArgumentException("Invalid secretKey");
+            }
         }
     }
 
