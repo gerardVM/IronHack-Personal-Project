@@ -28,6 +28,8 @@ Class Diagram
 
 This Bank System provides a simple graphic interface to make requests.
 
+You can access it by running the application and accessing URL http://localhost:8080/swagger-ui/index.html#/
+
 ![Interface](example.jpg "Interface")
 
 ## Requirements
