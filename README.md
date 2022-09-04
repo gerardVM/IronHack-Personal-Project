@@ -79,7 +79,7 @@ Following requests can be made:
 }
 ```
 
-(POST)  socket/create-tpthird-party: To create a new Third Party user. (Just Admins)
+(POST)  socket/create-third-party: To create a new Third Party user. (Just Admins)
 ```json
 {
 	"username"  : "userT",

@@ -7,7 +7,7 @@ import org.springframework.boot.SpringApplication;
 import org.springframework.boot.autoconfigure.SpringBootApplication;
 
 @SpringBootApplication
-public class BankApplication implements CommandLineRunner {
+public class BankApplication { // implements CommandLineRunner {
 
 	@Autowired
 	private Testing testing;
@@ -17,8 +17,8 @@ public class BankApplication implements CommandLineRunner {
 
 	}
 
-	@Override
-	public void run(String... args) throws Exception {
-	testing.addExampleData();
-	}
+	// @Override
+	// public void run(String... args) throws Exception {
+	// testing.addExampleData();
+	// }
 }
