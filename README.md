@@ -89,6 +89,9 @@ Following requests can be made:
 ```
 
 (GET)   socket/balance: To check an account balance. (Just Admins)
+
+This is an interesting feature: It automatically creates a new account and a new user to allow traceability to the modification of the balance.
+The added/removed amount comes/go from/to the new account created.
 	
 	socket/balance?id=1
 
@@ -109,6 +112,7 @@ Following requests can be made:
 	socket/balance/{accountId}
 
 (POST)  socket/new-transaction: To make a new transaction.
+
 ```json
 {
 	"amount": 15,
