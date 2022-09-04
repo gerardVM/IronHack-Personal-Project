@@ -2,9 +2,7 @@ package bank;
 
 import bank.auxiliar.Address;
 import bank.models.Role;
-import bank.models.User;
 import bank.models.roles.AccountHolder;
-// import bank.repositories.AccountHolderRepository;
 import bank.repositories.RoleRepository;
 import bank.repositories.UserRepository;
 import bank.services.UserService;
@@ -25,7 +23,6 @@ import static org.junit.jupiter.api.Assertions.*;
 public class AccountHolderRepositoryTest {
 
     @Autowired
-    // private AccountHolderRepository accountHolderRepository;
     private UserRepository userRepository;
     @Autowired
     private UserService userService;

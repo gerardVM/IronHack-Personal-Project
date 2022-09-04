@@ -18,21 +18,23 @@ This Bank System allows us to make requests in order to:
 
 Case Diagram
 
-![Case Diagram](case-diagram.jpg "Coming soon")
+![Case Diagram](case-diagram.jpg "Case diagram")
 
 Class Diagram
 
-![Class Diagram](class-diagram.jpg "Coming soon")
+![Class Diagram](class-diagram.jpg "Class diagram")
 
 ## How to try it
 
-Check below the options that are given to you in order to try the Bank System.
+This Bank System provides a simple graphic interface to make requests.
 
-This project is deployed automatically to a Kubernetes Cluster in Digital Ocean. You can check it out in the following link: (Ask the owner for the link)
+![Interface](example.jpg "Interface")
 
 ## Requirements
 
 You need to have installed IntelliJ and MySQL if you want to try it locally.
+
+You have another option though: This project is deployed automatically to a Kubernetes Cluster in Digital Ocean, so you can try it in the following link: (Ask the owner for the link)
 
 ## Usage
 
@@ -62,7 +64,7 @@ Following requests can be made:
 	"username"  : "userH",
 	"password"  : "passwordH",
 	"role"      : "ACCOUNT_HOLDER",
-	"birthDate" : ">>Not tried yet<<"
+	"birthDate" : ">>Not tested yet<<"
 }
 ```
 
@@ -75,7 +77,7 @@ Following requests can be made:
 }
 ```
 
-(POST)  socket/create-third-party: To create a new Third Party user. (Just Admins)
+(POST)  socket/create-tpthird-party: To create a new Third Party user. (Just Admins)
 ```json
 {
 	"username"  : "userT",
@@ -117,7 +119,7 @@ Following requests can be made:
 }
 ```
 
-(POST)  socket/new-transaction: To make a new transaction in case you are a Third party.
+(POST)  socket/new-tptransaction: To make a new transaction in case you are a Third party.
 ```json
 {
 	"amount": 15,

@@ -3,12 +3,9 @@ package bank;
 import bank.models.accounts.Checking;
 import bank.models.Role;
 import bank.models.roles.AccountHolder;
-// import bank.repositories.AccountHolderRepository;
-// import bank.repositories.CheckingRepository;
 import bank.repositories.AccountRepository;
 import bank.repositories.RoleRepository;
 import bank.repositories.UserRepository;
-//import bank.services.CheckingService;
 import bank.services.RoleService;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import org.junit.jupiter.api.AfterEach;
@@ -38,10 +35,8 @@ public class ControllerTest {
     private WebApplicationContext webApplicationContext;
 
     @Autowired
-    //private CheckingRepository checkingRepository;
     private AccountRepository accountRepository;
     @Autowired
-    // private AccountHolderRepository accountHolderRepository;
     private UserRepository userRepository;
     @Autowired
     private RoleRepository roleRepository;
@@ -93,7 +88,6 @@ public class ControllerTest {
         roleRepository.deleteById(checkerC.getPrimaryOwner().getRole().getId());
     }
 
-    // Como se añade la autenticación?
     @Test
     void create_test() throws Exception {
 
@@ -101,20 +95,7 @@ public class ControllerTest {
 
                 .andExpect(status().isOk()).andReturn();
         assertTrue(mvcResult.getResponse().getContentAsString().contains("250.00"));
-        // Lacking authentication testing
 
-        // ProductDTO product = new ProductDTO("New product", 69, 1L);
-        // String body = gson.toJson(product);
-        // List<Object> list = objectMapper.readValue(mvcResult.getResponse().getContentAsString(), new TypeReference<List<Object>>(){});
-        //assertTrue(list.contains("250.00"));
-
-
-
-
-                       // .content(body)
-                       // .contentType(MediaType.APPLICATION_JSON))
-                // .andExpect(status().isCreated()).andReturn();
-
-        //assertTrue(mvcResult.getResponse().getContentAsString().contains("New product"));
+        /* Pending work to do ... */
     }
 }

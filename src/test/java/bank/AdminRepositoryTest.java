@@ -2,9 +2,7 @@ package bank;
 
 import bank.models.Role;
 import bank.models.roles.Admin;
-//import bank.repositories.AdminRepository;
 import bank.repositories.RoleRepository;
-//import bank.services.AdminService;
 import bank.repositories.UserRepository;
 import bank.services.UserService;
 import org.junit.jupiter.api.AfterEach;
@@ -23,11 +21,9 @@ import static org.junit.jupiter.api.Assertions.assertEquals;
 public class AdminRepositoryTest {
 
     @Autowired
-    // private AdminRepository adminRepository;
     private UserRepository userRepository;
 
     @Autowired
-    // private AdminService adminService;
     private UserService userService;
 
     @Autowired

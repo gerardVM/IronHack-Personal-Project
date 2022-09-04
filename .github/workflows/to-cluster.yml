@@ -30,10 +30,10 @@ jobs:
         uses: steebchen/kubectl@v2.0.0
         with: # defaults to latest kubectl binary version
           config: ${{ secrets.KUBE_CONFIG_DATA }}
-          command: -n testing set image --record deployment.apps/java-app java-app=${{ secrets.DOCKER_IMAGE_NAME }}:${{ github.sha }}
+          command: -n test set image --record deployment.apps/java-app java-app=${{ secrets.DOCKER_IMAGE_NAME }}:${{ github.sha }}
       - name: verify deployment
         uses: steebchen/kubectl@v2.0.0
         with:
           config: ${{ secrets.KUBE_CONFIG_DATA }}
           version: v1.21.0 # specify kubectl binary version explicitly
-          command: -n testing rollout status deployment.apps/java-app
+          command: -n test rollout status deployment.apps/java-app
