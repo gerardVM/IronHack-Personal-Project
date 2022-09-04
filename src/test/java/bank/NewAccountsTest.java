@@ -28,13 +28,10 @@ import static org.junit.jupiter.api.Assertions.*;
 public class NewAccountsTest {
 
     @Autowired
-    //private CheckingRepository checkingRepository;
     private AccountRepository accountRepository;
     @Autowired
-    //private CheckingService checkingService;
     private AccountService accountService;
     @Autowired
-    //private AccountHolderRepository accountHolderRepository;
     private UserRepository userRepository;
     @Autowired
     private RoleRepository roleRepository;
@@ -95,20 +92,8 @@ public class NewAccountsTest {
         auxUser.setBirthDate(LocalDate.of(1998, 8, 29));
         tester.setPrimaryOwner(auxUser);
 
-        /*
-        newAccounts.newChecking(tester);
-        assertDoesNotThrow(() -> { accountService.findByPrimaryOwner(checker.getPrimaryOwner()).orElseThrow(); } );
-        assertThrows(Exception.class, () -> { accountService.findByPrimaryOwner(checker.getPrimaryOwner()).orElseThrow(); } );
-        */
-
         accountRepository.deleteAll();
         auxUser.setBirthDate(LocalDate.of(1998, 12, 29));
         tester.setPrimaryOwner(auxUser);
-
-        /*
-        newAccounts.newChecking(tester);
-        assertDoesNotThrow(() -> { studentCheckingService.findByPrimaryOwner(checker.getPrimaryOwner()).orElseThrow(); } );
-        assertThrows(Exception.class, () -> { accountService.findByPrimaryOwner(checker.getPrimaryOwner()).orElseThrow(); } );
-        */
     }
 }

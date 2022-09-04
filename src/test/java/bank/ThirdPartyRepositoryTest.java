@@ -26,11 +26,9 @@ import static org.junit.jupiter.api.Assertions.assertEquals;
 @SpringBootTest
 public class ThirdPartyRepositoryTest {
     @Autowired
-    //private ThirdPartyRepository thirdPartyRepository;
     private UserRepository userRepository;
 
     @Autowired
-    // private ThirdPartyService thirdPartyService;
     private UserService userService;
 
     @Autowired

@@ -33,14 +33,12 @@ import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.
 public class ControllerTest {
     @Autowired
     private WebApplicationContext webApplicationContext;
-
     @Autowired
     private AccountRepository accountRepository;
     @Autowired
     private UserRepository userRepository;
     @Autowired
     private RoleRepository roleRepository;
-
     @Autowired
     private RoleService roleService;
 
@@ -51,9 +49,6 @@ public class ControllerTest {
     Checking checkerC;
     private MockMvc mockMvc;
     private final ObjectMapper objectMapper = new ObjectMapper();
-
-    // Product product;
-    // Gson gson = new Gson();
 
     @BeforeEach
     void setUp(){

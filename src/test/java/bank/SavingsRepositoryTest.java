@@ -30,7 +30,6 @@ import static org.junit.jupiter.api.Assertions.assertThrows;
 @SpringBootTest
 public class SavingsRepositoryTest {
     @Autowired
-    // private AccountHolderRepository accountHolderRepository;
     private UserRepository userRepository;
     @Autowired
     private RoleRepository roleRepository;

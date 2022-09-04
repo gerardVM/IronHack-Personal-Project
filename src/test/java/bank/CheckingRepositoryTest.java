@@ -3,13 +3,9 @@ package bank;
 import bank.models.accounts.Checking;
 import bank.models.Role;
 import bank.models.roles.AccountHolder;
-//import bank.repositories.AccountHolderRepository;
-//import bank.repositories.CheckingRepository;
 import bank.repositories.AccountRepository;
 import bank.repositories.RoleRepository;
 import bank.repositories.UserRepository;
-// import bank.services.CheckingService;
-import bank.services.AccountService;
 import org.junit.jupiter.api.AfterEach;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
@@ -29,10 +25,8 @@ import static org.junit.jupiter.api.Assertions.assertEquals;
 @SpringBootTest
 public class CheckingRepositoryTest {
     @Autowired
-    //private CheckingRepository checkingRepository;
     private AccountRepository accountRepository;
     @Autowired
-    // private AccountHolderRepository accountHolderRepository;
     private UserRepository userRepository;
     @Autowired
     private RoleRepository roleRepository;

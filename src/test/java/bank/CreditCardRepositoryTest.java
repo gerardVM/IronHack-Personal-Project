@@ -28,10 +28,8 @@ import static org.junit.jupiter.api.Assertions.*;
 public class CreditCardRepositoryTest {
 
     @Autowired
-    // private CreditCardRepository creditCardRepository;
     private AccountRepository accountRepository;
     @Autowired
-    // private AccountHolderRepository accountHolderRepository;
     private UserRepository userRepository;
     @Autowired
     private RoleRepository roleRepository;
